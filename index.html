@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#1a1712">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gold Desk">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a1712'/%3E%3Ctext x='32' y='43' font-size='30' text-anchor='middle' fill='%23e3b04b' font-family='Georgia,serif'%3EAu%3C/text%3E%3C/svg%3E">
 <title>Gold Desk SMC - XAUUSD</title>
 <style>
@@ -126,100 +131,152 @@ main{padding-bottom:88px}
 .kv:first-of-type{border-top:0}
 .kv span{color:var(--muted);flex:none}
 .kv b{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.page{display:grid;gap:14px;align-content:start}
+.page[hidden]{display:none}
+.pg-h{margin:4px 0 2px;font-size:26px}
+main{max-width:760px}
+.bar{position:sticky;top:0;z-index:4;display:flex;align-items:baseline;gap:10px;background:var(--bg);border-bottom:1px solid var(--line);margin:-14px -14px 12px;padding:9px 14px}
+.bar-t{font-family:var(--serif);font-size:17px;font-weight:600;margin-right:auto}
+.bar-px{font-family:var(--serif);font-size:18px;font-variant-numeric:tabular-nums}
+.bar-c{font-size:12px;font-variant-numeric:tabular-nums}
+.nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px}
+.nav button[aria-current="page"]{color:var(--gold)}
+.nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--sell);margin-right:6px}
+.live-dot.on{background:var(--buy)}
+.eacard{align-items:flex-start}
+.eacard small{display:block;margin-top:2px}
+.rk{flex:none;font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.rk-Rendah{color:var(--buy);border-color:var(--buy)}
+.rk-Sedang{color:var(--gold);border-color:var(--gold)}
+.rk-Tinggi{color:var(--sell);border-color:var(--sell)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+pre.code{background:#120f0b;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto;max-height:68vh;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre;tab-size:3;margin:10px 0 0}
+.warnbox{background:#3a1a12;border:1px solid #7a2f1e;border-radius:10px;padding:10px 12px;font-size:14px}
+.warnbox p{margin:4px 0}
+.bullets li{margin:3px 0}
+ol.bullets{padding-left:20px}
+.gl dt{font-weight:600;margin-top:8px}
+.gl dd{margin:2px 0 0;color:var(--muted);font-size:14px}
 </style>
 </head>
 <body>
 <main>
-  <header class="top">
-    <h1>Gold Desk</h1><span class="sym">XAUUSD</span>
-    <span id="feed" class="feed"></span>
-  </header>
-  <div id="banner" class="banner" hidden></div>
-  <div id="banner2" class="banner warn" hidden></div>
+  <div class="bar" id="bar"><span id="barTitle" class="bar-t">Beranda</span><span id="barPx" class="bar-px">-</span><span id="barChg" class="bar-c"></span></div>
 
-  <section class="hero" aria-live="polite">
-    <div id="px" class="px">-</div>
-    <div id="chg" class="chg"></div>
-    <div id="srcInfo" class="muted" style="font-size:12px;margin-top:4px"></div>
-    <div class="calib">
-      <label>Harga di MT5 <input id="mt5" inputmode="decimal" placeholder="mis. 4012.35"></label>
-      <button id="btnCal" class="ghost" data-act="cal">Samakan</button>
-      <span id="offLbl" class="muted"></span>
-    </div>
-    <div class="tfs"><span class="muted" style="font-size:13px">Struktur dibaca di H1, entry dicari di M15</span><button class="ghost" data-act="refresh" style="margin-left:auto">Perbarui</button></div>
+  <section class="page" id="pg-home">
+    <header class="top">
+      <h1>Gold Desk</h1><span class="sym">XAUUSD</span>
+      <span id="feed" class="feed"></span>
+    </header>
+    <div id="banner" class="banner" hidden></div>
+    <div id="banner2" class="banner warn" hidden></div>
+
+    <section class="hero" aria-live="polite">
+      <div id="px" class="px">-</div>
+      <div id="chg" class="chg"></div>
+      <div id="srcInfo" class="muted" style="font-size:12px;margin-top:4px"></div>
+      <div class="calib">
+        <label>Harga di MT5 <input id="mt5" inputmode="decimal" placeholder="mis. 4012.35"></label>
+        <button id="btnCal" class="ghost" data-act="cal">Samakan</button>
+        <span id="offLbl" class="muted"></span>
+      </div>
+      <div class="tfs"><span class="muted" style="font-size:13px">Struktur dibaca di H1, entry dicari di M15</span><button class="ghost" data-act="refresh" style="margin-left:auto">Perbarui</button></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h"><h2>Chart M15</h2>
+        <a class="link" href="https://www.tradingview.com/chart/?symbol=OANDA:XAUUSD" target="_blank" rel="noopener">Buka di TradingView</a></div>
+      <div id="tgl" class="tfs" role="group" aria-label="Pengaturan chart" style="margin:0 0 8px"></div>
+      <div id="insp" class="muted" style="font-size:12px;min-height:18px"></div>
+      <canvas id="chart" aria-label="Chart candle XAUUSD"></canvas>
+      <div id="tvBox" style="display:none;height:420px"></div>
+      <p class="muted" style="font-size:12px;margin:8px 0 0">Ketuk candle buat lihat harganya. Mode TradingView cuma tampilan; sinyal tetap dihitung dari data feed sendiri.</p>
+    </section>
+
+    <section class="card" id="homeSig"></section>
+    <section class="card" id="todayCard"></section>
   </section>
 
-  <section class="card" id="todayCard" style="margin-bottom:14px"></section>
+  <section class="page" id="pg-signal" hidden>
+    <h1 class="pg-h">Signal</h1>
+    <section class="card" id="biasCard"></section>
+    <section class="card" id="sigCard"></section>
+    <section class="card" id="histCard"></section>
+  </section>
 
-  <div class="grid">
-    <div class="col">
-      <section class="card">
-        <div class="card-h"><h2>Chart M15</h2>
-          <a class="link" href="https://www.tradingview.com/chart/?symbol=OANDA:XAUUSD" target="_blank" rel="noopener">Buka di TradingView</a></div>
-        <div id="tgl" class="tfs" role="group" aria-label="Pengaturan chart" style="margin:0 0 8px"></div>
-        <div id="insp" class="muted" style="font-size:12px;min-height:18px"></div>
-        <canvas id="chart" aria-label="Chart candle XAUUSD"></canvas>
-        <div id="tvBox" style="display:none;height:420px"></div>
-        <p class="muted" style="font-size:12px;margin:8px 0 0">Ketuk candle buat lihat harganya. Mode TradingView cuma tampilan; sinyal tetap dihitung dari data feed sendiri.</p>
-      </section>
-      <section class="card" id="biasCard"></section>
-      <section class="card" id="sigCard"></section>
-      <section class="card" id="histCard"></section>
-    </div>
-    <div class="col">
-      <section class="card" id="newsCard"></section>
-      <section class="card">
-        <details>
-          <summary>Tambah news manual</summary>
-          <p class="muted" style="font-size:13px">Dipakai kalau kalender otomatis gagal atau ada news yang belum masuk. Isi jam sesuai jam di perangkat lu (WIB).</p>
-          <div class="addf">
-            <input id="evT" placeholder="Nama news, mis. CPI m/m" style="width:100%">
-            <input id="evD" type="datetime-local" style="width:100%">
-            <div class="field"><input id="evF" placeholder="Forecast"><input id="evP" placeholder="Previous"></div>
-            <button class="primary" data-act="addEvent">Tambah</button>
-          </div>
-        </details>
-      </section>
-      <section class="card" id="toolsCard">
-        <div class="tools">
-          <div>
-            <h2>Kalkulator lot</h2>
-            <div class="field" style="margin-top:10px">
-              <label>Saldo ($)<input id="bal" inputmode="decimal" value="1000"></label>
-              <label>Risiko (%)<input id="risk" inputmode="decimal" value="1"></label>
-              <label>Jarak SL ($)<input id="sld" inputmode="decimal" placeholder="mis. 6"></label>
-            </div>
-            <div id="lotOut" class="lot">-</div>
-            <p id="lotNote" class="muted" style="font-size:13px"></p>
-          </div>
-          <div>
-            <h2>Sesi market</h2>
-            <div id="sess" class="sess" style="margin-top:10px"></div>
-          </div>
-          <div>
-            <h2>Alert dan backup</h2>
-            <div class="row"><button data-act="testAlert">Tes bunyi dan getar</button></div>
-            <details style="margin-top:12px"><summary>Backup data</summary>
-              <p class="muted" style="font-size:13px">Salin backup buat disimpan (misalnya di catatan HP). Tempel lagi di kolom bawah buat memulihkan history dan news manual.</p>
-              <div class="row"><button data-act="bkCopy">Salin backup</button></div>
-              <textarea id="bkIn" rows="4" placeholder="Tempel backup di sini" style="width:100%;margin-top:8px;background:var(--raised);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px;font:inherit"></textarea>
-              <div class="row"><button class="ghost" data-act="bkRestore">Pulihkan dari backup</button><span id="bkMsg" class="muted" style="font-size:13px"></span></div>
-            </details>
-          </div>
+  <section class="page" id="pg-news" hidden>
+    <h1 class="pg-h">News</h1>
+    <section class="card" id="newsCard"></section>
+    <section class="card">
+      <details id="tvCalDet">
+        <summary>Kalender TradingView (tampilan)</summary>
+        <p class="muted" style="font-size:13px">Cadangan kalau kalender otomatis gagal. Ini cuma tampilan, jadi tidak dipakai buat banner dan cek news di sinyal.</p>
+        <div id="tvCalBox" style="height:480px"></div>
+      </details>
+    </section>
+    <section class="card">
+      <details>
+        <summary>Tambah news manual</summary>
+        <p class="muted" style="font-size:13px">Dipakai kalau kalender otomatis gagal atau ada news yang belum masuk. Isi jam sesuai jam di perangkat lu (WIB).</p>
+        <div class="addf">
+          <input id="evT" placeholder="Nama news, mis. CPI m/m" style="width:100%">
+          <input id="evD" type="datetime-local" style="width:100%">
+          <div class="field"><input id="evF" placeholder="Forecast"><input id="evP" placeholder="Previous"></div>
+          <button class="primary" data-act="addEvent">Tambah</button>
         </div>
-      </section>
-    </div>
-  </div>
+      </details>
+    </section>
+  </section>
+
+  <section class="page" id="pg-ea" hidden>
+    <h1 class="pg-h">EA</h1>
+    <div id="eaRoot"></div>
+  </section>
+
+  <section class="page" id="pg-tools" hidden>
+    <h1 class="pg-h">Alat</h1>
+    <section class="card" id="toolsCard">
+      <h2>Kalkulator lot</h2>
+      <div class="field" style="margin-top:10px">
+        <label>Saldo ($)<input id="bal" inputmode="decimal" value="1000"></label>
+        <label>Risiko (%)<input id="risk" inputmode="decimal" value="1"></label>
+        <label>Jarak SL ($)<input id="sld" inputmode="decimal" placeholder="mis. 6"></label>
+      </div>
+      <div id="lotOut" class="lot">-</div>
+      <p id="lotNote" class="muted" style="font-size:13px"></p>
+    </section>
+    <section class="card">
+      <h2>Sesi market</h2>
+      <div id="sess" class="sess" style="margin-top:10px"></div>
+    </section>
+    <section class="card" id="installCard">
+      <h2>Pasang sebagai aplikasi</h2>
+      <p class="muted" style="font-size:13px">Bisa dipasang di layar utama dan kebuka layar penuh tanpa kolom alamat.</p>
+      <div class="row"><button id="btnInstall" class="primary" data-act="install" hidden>Pasang aplikasi</button></div>
+      <ul class="bullets muted" style="font-size:13px"><li>Android (Chrome): menu titik tiga, lalu Instal aplikasi atau Tambahkan ke layar utama.</li><li>iPhone (Safari): tombol Bagikan, lalu Tambah ke Layar Utama.</li></ul>
+    </section>
+    <section class="card">
+      <h2>Alert dan backup</h2>
+      <div class="row"><button data-act="testAlert">Tes bunyi dan getar</button></div>
+      <details style="margin-top:12px"><summary>Backup data</summary>
+        <p class="muted" style="font-size:13px">Salin backup buat disimpan (misalnya di catatan HP). Tempel lagi di kolom bawah buat memulihkan history dan news manual.</p>
+        <div class="row"><button data-act="bkCopy">Salin backup</button></div>
+        <textarea id="bkIn" rows="4" placeholder="Tempel backup di sini" style="width:100%;margin-top:8px;background:var(--raised);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px;font:inherit"></textarea>
+        <div class="row"><button class="ghost" data-act="bkRestore">Pulihkan dari backup</button><span id="bkMsg" class="muted" style="font-size:13px"></span></div>
+      </details>
+    </section>
+  </section>
 
   <footer>Alat bantu analisa pribadi, bukan saran keuangan. Sinyal dihitung dari aturan SMC yang dikodekan (swing, BOS, CHoCH, order block, FVG, Fibonacci), jadi bisa beda dari yang lu lihat di LuxAlgo atau dengan mata, dan belum pernah di-backtest. Feed harga memakai PAXG sebagai proxy emas, selisih beberapa dolar dari broker; isi harga MT5 lalu tekan Samakan. Sinyal pending dibatalkan kalau harga lebih dulu ke TP atau lewat 12 jam. TP dan SL dicek tiap pembaruan data (sekitar 20 detik). History tersimpan di browser ini saja.</footer>
 </main>
 
-<nav class="nav" aria-label="Navigasi cepat">
-  <button data-act="go" data-t="top">Harga</button>
-  <button data-act="go" data-t="#sigCard">Sinyal</button>
-  <button data-act="go" data-t="#todayCard">News</button>
-  <button data-act="go" data-t="#histCard">History</button>
-  <button data-act="go" data-t="#toolsCard">Alat</button>
+<nav class="nav" aria-label="Menu utama">
+  <button data-act="page" data-p="home" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Beranda</span></button>
+  <button data-act="page" data-p="signal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18l5-6 4 3 7-9"/><path d="M4 21h16"/></svg><span>Signal</span></button>
+  <button data-act="page" data-p="news"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg><span>News</span></button>
+  <button data-act="page" data-p="ea"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 8V4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg><span>EA</span></button>
+  <button data-act="page" data-p="tools"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>Alat</span></button>
 </nav>
 <div id="toast" class="toast" role="status" hidden></div>
 
@@ -230,6 +287,881 @@ main{padding-bottom:88px}
   </div>
 </div>
 
+<script type="text/plain" id="code-smc">//+------------------------------------------------------------------+
+//| GoldDesk_SMC.mq5                                                  |
+//| EA SMC sederhana: struktur H1, order block, zona Fibonacci.       |
+//| Entri berupa pending limit. Uji di akun demo dulu.                |
+//+------------------------------------------------------------------+
+#property copyright "Gold Desk"
+#property version   "1.00"
+#include <Trade\Trade.mqh>
+
+input double RiskPercent  = 0.5;      // Risiko per trade (% equity)
+input int    PivotLen     = 3;        // Panjang pivot swing H1
+input double FibTop       = 0.50;     // Batas dekat zona Fib
+input double FibBottom    = 0.79;     // Batas jauh zona Fib
+input double MinRR        = 2.0;      // Minimal reward:risk
+input double SLBufferATR  = 0.3;      // Buffer SL (x ATR M15)
+input double MinSLATR     = 1.0;      // Jarak SL minimal (x ATR M15)
+input int    PendingHours = 12;       // Pending dibatalkan setelah (jam)
+input int    MaxSpread    = 80;       // Spread maksimal (points)
+input ulong  MagicNumber  = 20261019; // Magic number
+
+CTrade   trade;
+int      atrHandle = INVALID_HANDLE;
+datetime lastBar   = 0;
+
+int OnInit()
+{
+   trade.SetExpertMagicNumber(MagicNumber);
+   atrHandle = iATR(_Symbol, PERIOD_M15, 14);
+   if(atrHandle == INVALID_HANDLE) return(INIT_FAILED);
+   return(INIT_SUCCEEDED);
+}
+
+void OnDeinit(const int reason)
+{
+   if(atrHandle != INVALID_HANDLE) IndicatorRelease(atrHandle);
+}
+
+bool HasActivity()
+{
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      ulong tk = PositionGetTicket(i);
+      if(tk == 0) continue;
+      if(PositionGetString(POSITION_SYMBOL) == _Symbol && PositionGetInteger(POSITION_MAGIC) == (long)MagicNumber)
+         return(true);
+   }
+   for(int j = OrdersTotal() - 1; j >= 0; j--)
+   {
+      ulong ot = OrderGetTicket(j);
+      if(ot == 0) continue;
+      if(OrderGetString(ORDER_SYMBOL) == _Symbol && OrderGetInteger(ORDER_MAGIC) == (long)MagicNumber)
+         return(true);
+   }
+   return(false);
+}
+
+double NormLot(double lot)
+{
+   double step = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_STEP);
+   double vmin = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
+   double vmax = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MAX);
+   if(step <= 0) step = 0.01;
+   lot = MathFloor(lot / step) * step;
+   lot = MathMax(vmin, MathMin(vmax, lot));
+   return(NormalizeDouble(lot, 2));
+}
+
+// Catatan: kalau lot minimum broker lebih besar dari hasil hitungan, lot minimum yang dipakai.
+double CalcLot(double slDist)
+{
+   double tickVal  = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_VALUE);
+   double tickSize = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_SIZE);
+   if(tickVal <= 0 || tickSize <= 0 || slDist <= 0) return(0);
+   double riskMoney  = AccountInfoDouble(ACCOUNT_EQUITY) * RiskPercent / 100.0;
+   double lossPerLot = slDist / tickSize * tickVal;
+   return(NormLot(riskMoney / lossPerLot));
+}
+
+bool FindSetup(int &dir, double &entry, double &sl, double &tp)
+{
+   MqlRates h[];
+   ArraySetAsSeries(h, false);                          // indeks 0 = candle terlama
+   int n = CopyRates(_Symbol, PERIOD_H1, 1, 300, h);    // hanya candle H1 yang sudah tertutup
+   if(n < 60) return(false);
+
+   double hiP = 0, loP = 0;
+   int    hiI = -1, loI = -1;
+   bool   hiCr = true, loCr = true;
+   int    evDir = 0, evBreak = -1, evLeg = -1;
+   double evLo = 0, evHi = 0;
+
+   // 1) Struktur: pivot swing, BOS/CHoCH, dan candle leg (calon order block)
+   for(int i = 0; i < n; i++)
+   {
+      int pv = i - PivotLen;
+      if(pv >= PivotLen)
+      {
+         bool isH = true, isL = true;
+         for(int j = 1; j <= PivotLen; j++)
+         {
+            if(h[pv].high <= h[pv - j].high || h[pv].high < h[pv + j].high) isH = false;
+            if(h[pv].low  >= h[pv - j].low  || h[pv].low  > h[pv + j].low)  isL = false;
+         }
+         if(isH) { hiP = h[pv].high; hiI = pv; hiCr = false; }
+         if(isL) { loP = h[pv].low;  loI = pv; loCr = false; }
+      }
+      if(hiI >= 0 && !hiCr && h[i].close > hiP)
+      {
+         double mn = DBL_MAX; int mi = hiI;
+         for(int k = hiI; k <= i; k++) if(h[k].low < mn) { mn = h[k].low; mi = k; }
+         evDir = 1; evBreak = i; evLeg = mi; evLo = h[mi].low; evHi = h[mi].high;
+         hiCr = true;
+      }
+      else if(loI >= 0 && !loCr && h[i].close < loP)
+      {
+         double mx = -DBL_MAX; int xi = loI;
+         for(int k = loI; k <= i; k++) if(h[k].high > mx) { mx = h[k].high; xi = k; }
+         evDir = -1; evBreak = i; evLeg = xi; evLo = h[xi].low; evHi = h[xi].high;
+         loCr = true;
+      }
+   }
+   if(evDir == 0) return(false);
+
+   // 2) Range leg sejak break
+   double rHi, rLo;
+   if(evDir == 1)
+   {
+      rLo = h[evLeg].low; rHi = -DBL_MAX;
+      for(int k = evBreak; k < n; k++) rHi = MathMax(rHi, h[k].high);
+   }
+   else
+   {
+      rHi = h[evLeg].high; rLo = DBL_MAX;
+      for(int k = evBreak; k < n; k++) rLo = MathMin(rLo, h[k].low);
+   }
+   double R = rHi - rLo;
+   if(R <= 0) return(false);
+
+   // 3) Order block batal kalau sudah ditutup menembusnya
+   for(int k = evBreak + 1; k < n; k++)
+   {
+      if(evDir ==  1 && h[k].close < evLo) return(false);
+      if(evDir == -1 && h[k].close > evHi) return(false);
+   }
+
+   // 4) Zona Fibonacci dan irisan dengan order block
+   double bandLo, bandHi;
+   if(evDir == 1) { bandHi = rHi - FibTop * R; bandLo = rHi - FibBottom * R; }
+   else           { bandLo = rLo + FibTop * R; bandHi = rLo + FibBottom * R; }
+   double zLo = MathMax(evLo, bandLo);
+   double zHi = MathMin(evHi, bandHi);
+   if(zHi - zLo < 5 * _Point) return(false);
+
+   // 5) Harga harus belum masuk zona (supaya bisa pasang pending limit)
+   double px = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+   if(px <= rLo || px >= rHi) return(false);
+   if(evDir ==  1 && px <= zHi) return(false);
+   if(evDir == -1 && px >= zLo) return(false);
+
+   // 6) Entry, SL, TP, dan filter RR
+   double atr[1];
+   if(CopyBuffer(atrHandle, 0, 1, 1, atr) < 1) return(false);
+   double buf   = SLBufferATR * atr[0];
+   double minSL = MinSLATR * atr[0];
+
+   entry = (zLo + zHi) / 2.0;
+   if(evDir == 1)
+   {
+      sl = MathMin(evLo - buf, entry - minSL);
+      tp = rHi;
+      if(entry - sl <= 0) return(false);
+      if((tp - entry) / (entry - sl) < MinRR) return(false);
+   }
+   else
+   {
+      sl = MathMax(evHi + buf, entry + minSL);
+      tp = rLo;
+      if(sl - entry <= 0) return(false);
+      if((entry - tp) / (sl - entry) < MinRR) return(false);
+   }
+   dir   = evDir;
+   entry = NormalizeDouble(entry, _Digits);
+   sl    = NormalizeDouble(sl, _Digits);
+   tp    = NormalizeDouble(tp, _Digits);
+   return(true);
+}
+
+void OnTick()
+{
+   datetime t = iTime(_Symbol, PERIOD_M15, 0);
+   if(t == lastBar) return;                 // cek sekali per candle M15
+   lastBar = t;
+
+   if(HasActivity()) return;                // satu setup dalam satu waktu
+   if(SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) > MaxSpread) return;
+
+   int dir = 0; double entry = 0, sl = 0, tp = 0;
+   if(!FindSetup(dir, entry, sl, tp)) return;
+
+   double ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+   double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+   double minDist = SymbolInfoInteger(_Symbol, SYMBOL_TRADE_STOPS_LEVEL) * _Point;
+   if(dir ==  1 && entry > ask - minDist) return;
+   if(dir == -1 && entry < bid + minDist) return;
+
+   double lot = CalcLot(MathAbs(entry - sl));
+   if(lot <= 0) return;
+
+   datetime expireAt = TimeCurrent() + PendingHours * 3600;
+   if(dir == 1) trade.BuyLimit(lot, entry, _Symbol, sl, tp, ORDER_TIME_SPECIFIED, expireAt, "GD SMC");
+   else         trade.SellLimit(lot, entry, _Symbol, sl, tp, ORDER_TIME_SPECIFIED, expireAt, "GD SMC");
+}
+</script>
+<script type="text/plain" id="code-martingale">//+------------------------------------------------------------------+
+//| GoldDesk_Martingale.mq5                                           |
+//| Martingale dengan pengaman: batas langkah, batas lot, batas rugi  |
+//| harian, dan cek margin. BERISIKO TINGGI. Hanya untuk belajar dan  |
+//| uji di akun demo.                                                 |
+//+------------------------------------------------------------------+
+#property copyright "Gold Desk"
+#property version   "1.00"
+#include <Trade\Trade.mqh>
+
+input double BaseLot         = 0.01;     // Lot awal
+input double Multiplier      = 2.0;      // Pengali lot setelah kalah
+input int    MaxSteps        = 3;        // Maksimal rentetan kalah sebelum berhenti
+input double MaxLot          = 0.20;     // Batas lot mutlak
+input double SLDollars       = 5.0;      // Jarak SL (dolar)
+input double TPDollars       = 5.0;      // Jarak TP (dolar)
+input double MaxDailyLossPct = 5.0;      // Berhenti hari ini jika equity turun (%)
+input int    FastEMA         = 20;       // EMA cepat (M15)
+input int    SlowEMA         = 50;       // EMA lambat (M15)
+input int    MaxSpread       = 80;       // Spread maksimal (points)
+input ulong  MagicNumber     = 20261020; // Magic number
+
+CTrade   trade;
+int      hFast = INVALID_HANDLE;
+int      hSlow = INVALID_HANDLE;
+datetime lastBar    = 0;
+datetime resetFrom  = 0;      // deal sebelum waktu ini tidak dihitung dalam rentetan
+datetime pauseUntil = 0;      // tidak membuka posisi sebelum waktu ini
+double   dayStartEq = 0;
+int      curDay     = -1;
+
+int OnInit()
+{
+   trade.SetExpertMagicNumber(MagicNumber);
+   hFast = iMA(_Symbol, PERIOD_M15, FastEMA, 0, MODE_EMA, PRICE_CLOSE);
+   hSlow = iMA(_Symbol, PERIOD_M15, SlowEMA, 0, MODE_EMA, PRICE_CLOSE);
+   if(hFast == INVALID_HANDLE || hSlow == INVALID_HANDLE) return(INIT_FAILED);
+   dayStartEq = AccountInfoDouble(ACCOUNT_EQUITY);
+   return(INIT_SUCCEEDED);
+}
+
+void OnDeinit(const int reason)
+{
+   if(hFast != INVALID_HANDLE) IndicatorRelease(hFast);
+   if(hSlow != INVALID_HANDLE) IndicatorRelease(hSlow);
+}
+
+void CheckNewDay()
+{
+   MqlDateTime d;
+   TimeToStruct(TimeCurrent(), d);
+   if(d.day_of_year != curDay)
+   {
+      curDay = d.day_of_year;
+      dayStartEq = AccountInfoDouble(ACCOUNT_EQUITY);
+   }
+}
+
+datetime NextDayStart()
+{
+   MqlDateTime d;
+   TimeToStruct(TimeCurrent(), d);
+   d.hour = 0; d.min = 0; d.sec = 0;
+   return(StructToTime(d) + 86400);
+}
+
+bool HasPosition()
+{
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      ulong tk = PositionGetTicket(i);
+      if(tk == 0) continue;
+      if(PositionGetString(POSITION_SYMBOL) == _Symbol && PositionGetInteger(POSITION_MAGIC) == (long)MagicNumber)
+         return(true);
+   }
+   return(false);
+}
+
+// Hitung rentetan kalah berturut-turut dari deal penutup terakhir
+int LossStreak()
+{
+   if(!HistorySelect(resetFrom, TimeCurrent())) return(0);
+   int total = HistoryDealsTotal();
+   int streak = 0;
+   for(int i = total - 1; i >= 0; i--)
+   {
+      ulong tk = HistoryDealGetTicket(i);
+      if(tk == 0) continue;
+      if(HistoryDealGetInteger(tk, DEAL_MAGIC) != (long)MagicNumber) continue;
+      if(HistoryDealGetString(tk, DEAL_SYMBOL) != _Symbol) continue;
+      if(HistoryDealGetInteger(tk, DEAL_ENTRY) != DEAL_ENTRY_OUT) continue;
+      double p = HistoryDealGetDouble(tk, DEAL_PROFIT) + HistoryDealGetDouble(tk, DEAL_SWAP) + HistoryDealGetDouble(tk, DEAL_COMMISSION);
+      if(p < 0) streak++; else break;
+   }
+   return(streak);
+}
+
+// Arah mengikuti posisi EMA cepat terhadap EMA lambat pada candle tertutup
+int Signal()
+{
+   double f[1], s[1];
+   if(CopyBuffer(hFast, 0, 1, 1, f) < 1) return(0);
+   if(CopyBuffer(hSlow, 0, 1, 1, s) < 1) return(0);
+   if(f[0] > s[0]) return(1);
+   if(f[0] < s[0]) return(-1);
+   return(0);
+}
+
+double NormLot(double lot)
+{
+   double step = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_STEP);
+   double vmin = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
+   double vmax = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MAX);
+   if(step <= 0) step = 0.01;
+   lot = MathFloor(lot / step) * step;
+   lot = MathMax(vmin, MathMin(vmax, lot));
+   return(NormalizeDouble(lot, 2));
+}
+
+void OnTick()
+{
+   CheckNewDay();
+   datetime t = iTime(_Symbol, PERIOD_M15, 0);
+   if(t == lastBar) return;
+   lastBar = t;
+
+   if(TimeCurrent() < pauseUntil) return;
+   if(HasPosition()) return;
+
+   double eq = AccountInfoDouble(ACCOUNT_EQUITY);
+   if(dayStartEq > 0 && eq < dayStartEq * (1.0 - MaxDailyLossPct / 100.0))
+   {
+      pauseUntil = NextDayStart();
+      resetFrom  = TimeCurrent();
+      Print("Batas rugi harian tercapai, berhenti sampai besok.");
+      return;
+   }
+   if(SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) > MaxSpread) return;
+
+   int streak = LossStreak();
+   if(streak >= MaxSteps)
+   {
+      pauseUntil = NextDayStart();
+      resetFrom  = TimeCurrent();
+      Print("Mencapai ", MaxSteps, " kalah beruntun, berhenti sampai besok.");
+      return;
+   }
+
+   int dir = Signal();
+   if(dir == 0) return;
+
+   double lot = NormLot(MathMin(BaseLot * MathPow(Multiplier, streak), MaxLot));
+   double ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+   double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+
+   double need = 0;
+   if(!OrderCalcMargin(dir == 1 ? ORDER_TYPE_BUY : ORDER_TYPE_SELL, _Symbol, lot, dir == 1 ? ask : bid, need)) return;
+   if(need > AccountInfoDouble(ACCOUNT_MARGIN_FREE) * 0.5) return;   // margin bebas harus longgar
+
+   string cm = "MG langkah " + IntegerToString(streak);
+   if(dir == 1)
+      trade.Buy(lot, _Symbol, ask, NormalizeDouble(ask - SLDollars, _Digits), NormalizeDouble(ask + TPDollars, _Digits), cm);
+   else
+      trade.Sell(lot, _Symbol, bid, NormalizeDouble(bid + SLDollars, _Digits), NormalizeDouble(bid - TPDollars, _Digits), cm);
+}
+</script>
+<script type="text/plain" id="code-emarsi">//+------------------------------------------------------------------+
+//| GoldDesk_EMA_RSI.mq5                                              |
+//| Mengikuti tren: persilangan EMA dengan filter RSI. SL berbasis    |
+//| ATR, TP berdasarkan RR. Satu posisi dalam satu waktu.             |
+//+------------------------------------------------------------------+
+#property copyright "Gold Desk"
+#property version   "1.00"
+#include <Trade\Trade.mqh>
+
+input double RiskPercent = 0.5;      // Risiko per trade (% equity)
+input int    FastEMA     = 20;       // EMA cepat
+input int    SlowEMA     = 50;       // EMA lambat
+input int    RSIPeriod   = 14;       // Periode RSI
+input double RSILevel    = 50.0;     // Buy hanya jika RSI di atas, sell jika di bawah
+input int    ATRPeriod   = 14;       // Periode ATR
+input double SLATR       = 1.5;      // Jarak SL (x ATR)
+input double RR          = 1.5;      // Reward:risk untuk TP
+input int    MaxSpread   = 80;       // Spread maksimal (points)
+input ulong  MagicNumber = 20261021; // Magic number
+
+CTrade   trade;
+int      hF = INVALID_HANDLE, hS = INVALID_HANDLE, hR = INVALID_HANDLE, hA = INVALID_HANDLE;
+datetime lastBar = 0;
+
+int OnInit()
+{
+   trade.SetExpertMagicNumber(MagicNumber);
+   hF = iMA(_Symbol, PERIOD_CURRENT, FastEMA, 0, MODE_EMA, PRICE_CLOSE);
+   hS = iMA(_Symbol, PERIOD_CURRENT, SlowEMA, 0, MODE_EMA, PRICE_CLOSE);
+   hR = iRSI(_Symbol, PERIOD_CURRENT, RSIPeriod, PRICE_CLOSE);
+   hA = iATR(_Symbol, PERIOD_CURRENT, ATRPeriod);
+   if(hF == INVALID_HANDLE || hS == INVALID_HANDLE || hR == INVALID_HANDLE || hA == INVALID_HANDLE) return(INIT_FAILED);
+   return(INIT_SUCCEEDED);
+}
+
+void OnDeinit(const int reason)
+{
+   if(hF != INVALID_HANDLE) IndicatorRelease(hF);
+   if(hS != INVALID_HANDLE) IndicatorRelease(hS);
+   if(hR != INVALID_HANDLE) IndicatorRelease(hR);
+   if(hA != INVALID_HANDLE) IndicatorRelease(hA);
+}
+
+bool HasPosition()
+{
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      ulong tk = PositionGetTicket(i);
+      if(tk == 0) continue;
+      if(PositionGetString(POSITION_SYMBOL) == _Symbol && PositionGetInteger(POSITION_MAGIC) == (long)MagicNumber)
+         return(true);
+   }
+   return(false);
+}
+
+double NormLot(double lot)
+{
+   double step = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_STEP);
+   double vmin = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
+   double vmax = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MAX);
+   if(step <= 0) step = 0.01;
+   lot = MathFloor(lot / step) * step;
+   lot = MathMax(vmin, MathMin(vmax, lot));
+   return(NormalizeDouble(lot, 2));
+}
+
+double CalcLot(double slDist)
+{
+   double tickVal  = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_VALUE);
+   double tickSize = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_SIZE);
+   if(tickVal <= 0 || tickSize <= 0 || slDist <= 0) return(0);
+   double riskMoney  = AccountInfoDouble(ACCOUNT_EQUITY) * RiskPercent / 100.0;
+   double lossPerLot = slDist / tickSize * tickVal;
+   return(NormLot(riskMoney / lossPerLot));
+}
+
+void OnTick()
+{
+   datetime t = iTime(_Symbol, PERIOD_CURRENT, 0);
+   if(t == lastBar) return;
+   lastBar = t;
+
+   if(HasPosition()) return;
+   if(SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) > MaxSpread) return;
+
+   double f[2], s[2], r[1], a[1];
+   // indeks 0 = candle tertutup terakhir, indeks 1 = satu candle sebelumnya
+   ArraySetAsSeries(f, true);
+   ArraySetAsSeries(s, true);
+   if(CopyBuffer(hF, 0, 1, 2, f) < 2) return;
+   if(CopyBuffer(hS, 0, 1, 2, s) < 2) return;
+   if(CopyBuffer(hR, 0, 1, 1, r) < 1) return;
+   if(CopyBuffer(hA, 0, 1, 1, a) < 1) return;
+
+   int dir = 0;
+   if(f[1] <= s[1] && f[0] > s[0] && r[0] > RSILevel) dir = 1;
+   if(f[1] >= s[1] && f[0] < s[0] && r[0] < RSILevel) dir = -1;
+   if(dir == 0) return;
+
+   double slDist = SLATR * a[0];
+   double lot = CalcLot(slDist);
+   if(lot <= 0) return;
+
+   double ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+   double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+   if(dir == 1)
+      trade.Buy(lot, _Symbol, ask, NormalizeDouble(ask - slDist, _Digits), NormalizeDouble(ask + slDist * RR, _Digits), "GD EMA RSI");
+   else
+      trade.Sell(lot, _Symbol, bid, NormalizeDouble(bid + slDist, _Digits), NormalizeDouble(bid - slDist * RR, _Digits), "GD EMA RSI");
+}
+</script>
+<script type="text/plain" id="code-asia">//+------------------------------------------------------------------+
+//| GoldDesk_AsiaBreakout.mq5                                         |
+//| Breakout range pagi: pasang BuyStop di atas range dan SellStop di |
+//| bawah range. Salah satu terisi, yang lain dihapus (OCO). Satu     |
+//| setup per hari. JAM MEMAKAI WAKTU SERVER BROKER, cek dulu.        |
+//+------------------------------------------------------------------+
+#property copyright "Gold Desk"
+#property version   "1.00"
+#include <Trade\Trade.mqh>
+
+input int    RangeStartHour = 0;        // Awal range (jam server)
+input int    RangeEndHour   = 7;        // Akhir range (jam server), setelah ini pending dipasang
+input int    TradeEndHour   = 18;       // Pending dan posisi dibersihkan di jam ini (jam server)
+input double BufferDollars  = 0.5;      // Jarak pending dari tepi range (dolar)
+input double MaxRangeDollars = 15.0;    // Range lebih lebar dari ini = lewati hari ini
+input double RR             = 1.5;      // Reward:risk untuk TP
+input double RiskPercent    = 0.5;      // Risiko per trade (% equity)
+input int    MaxSpread      = 80;       // Spread maksimal (points)
+input ulong  MagicNumber    = 20261022; // Magic number
+
+CTrade trade;
+int    placedDoy = -1;      // hari (day of year) saat pending terakhir dipasang
+
+int OnInit()
+{
+   trade.SetExpertMagicNumber(MagicNumber);
+   return(INIT_SUCCEEDED);
+}
+
+bool HasPosition()
+{
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      ulong tk = PositionGetTicket(i);
+      if(tk == 0) continue;
+      if(PositionGetString(POSITION_SYMBOL) == _Symbol && PositionGetInteger(POSITION_MAGIC) == (long)MagicNumber)
+         return(true);
+   }
+   return(false);
+}
+
+void DeletePendings()
+{
+   for(int i = OrdersTotal() - 1; i >= 0; i--)
+   {
+      ulong ot = OrderGetTicket(i);
+      if(ot == 0) continue;
+      if(OrderGetString(ORDER_SYMBOL) == _Symbol && OrderGetInteger(ORDER_MAGIC) == (long)MagicNumber)
+         trade.OrderDelete(ot);
+   }
+}
+
+void ClosePositions()
+{
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      ulong tk = PositionGetTicket(i);
+      if(tk == 0) continue;
+      if(PositionGetString(POSITION_SYMBOL) == _Symbol && PositionGetInteger(POSITION_MAGIC) == (long)MagicNumber)
+         trade.PositionClose(tk);
+   }
+}
+
+double NormLot(double lot)
+{
+   double step = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_STEP);
+   double vmin = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
+   double vmax = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MAX);
+   if(step <= 0) step = 0.01;
+   lot = MathFloor(lot / step) * step;
+   lot = MathMax(vmin, MathMin(vmax, lot));
+   return(NormalizeDouble(lot, 2));
+}
+
+double CalcLot(double slDist)
+{
+   double tickVal  = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_VALUE);
+   double tickSize = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_SIZE);
+   if(tickVal <= 0 || tickSize <= 0 || slDist <= 0) return(0);
+   double riskMoney  = AccountInfoDouble(ACCOUNT_EQUITY) * RiskPercent / 100.0;
+   double lossPerLot = slDist / tickSize * tickVal;
+   return(NormLot(riskMoney / lossPerLot));
+}
+
+// Tinggi dan rendah range hari ini dari candle M15
+bool GetRange(double &hi, double &lo)
+{
+   MqlRates r[];
+   ArraySetAsSeries(r, true);
+   int n = CopyRates(_Symbol, PERIOD_M15, 0, 200, r);
+   if(n <= 0) return(false);
+   MqlDateTime today;
+   TimeToStruct(TimeCurrent(), today);
+   hi = -DBL_MAX; lo = DBL_MAX;
+   int cnt = 0;
+   for(int i = 0; i < n; i++)
+   {
+      MqlDateTime d;
+      TimeToStruct(r[i].time, d);
+      if(d.year != today.year || d.day_of_year != today.day_of_year) continue;
+      if(d.hour >= RangeStartHour && d.hour < RangeEndHour)
+      {
+         hi = MathMax(hi, r[i].high);
+         lo = MathMin(lo, r[i].low);
+         cnt++;
+      }
+   }
+   return(cnt > 0);
+}
+
+void OnTick()
+{
+   MqlDateTime now;
+   TimeToStruct(TimeCurrent(), now);
+
+   if(HasPosition()) { DeletePendings(); }             // OCO: satu terisi, yang lain dihapus
+   if(now.hour >= TradeEndHour)                        // akhir sesi: bersihkan semuanya
+   {
+      DeletePendings();
+      ClosePositions();
+      return;
+   }
+   if(HasPosition()) return;
+   if(now.hour < RangeEndHour) return;                 // range belum selesai
+   if(placedDoy == now.day_of_year) return;            // sudah dipasang hari ini
+   if(SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) > MaxSpread) return;
+
+   double hi, lo;
+   if(!GetRange(hi, lo)) return;
+   if(hi - lo > MaxRangeDollars) { placedDoy = now.day_of_year; return; }   // range terlalu lebar
+
+   double buyEntry  = NormalizeDouble(hi + BufferDollars, _Digits);
+   double sellEntry = NormalizeDouble(lo - BufferDollars, _Digits);
+   double slBuy     = NormalizeDouble(lo - BufferDollars, _Digits);
+   double slSell    = NormalizeDouble(hi + BufferDollars, _Digits);
+   double distBuy   = buyEntry - slBuy;
+   double distSell  = slSell - sellEntry;
+   double tpBuy     = NormalizeDouble(buyEntry + distBuy * RR, _Digits);
+   double tpSell    = NormalizeDouble(sellEntry - distSell * RR, _Digits);
+
+   double ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+   double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+   double minDist = SymbolInfoInteger(_Symbol, SYMBOL_TRADE_STOPS_LEVEL) * _Point;
+   if(buyEntry <= ask + minDist || sellEntry >= bid - minDist)
+   {
+      placedDoy = now.day_of_year;     // harga sudah di luar range, lewati hari ini
+      return;
+   }
+
+   double lot = CalcLot(distBuy);
+   if(lot <= 0) return;
+
+   MqlDateTime endT = now;
+   endT.hour = TradeEndHour; endT.min = 0; endT.sec = 0;
+   datetime expireAt = StructToTime(endT);
+
+   bool ok1 = trade.BuyStop(lot, buyEntry, _Symbol, slBuy, tpBuy, ORDER_TIME_SPECIFIED, expireAt, "GD Asia BO");
+   bool ok2 = trade.SellStop(lot, sellEntry, _Symbol, slSell, tpSell, ORDER_TIME_SPECIFIED, expireAt, "GD Asia BO");
+   if(ok1 || ok2) placedDoy = now.day_of_year;
+}
+</script>
+<script type="text/plain" id="code-manager">//+------------------------------------------------------------------+
+//| GoldDesk_TradeManager.mq5                                         |
+//| Mengelola posisi yang SUDAH ADA: breakeven, partial close, dan    |
+//| trailing stop. Tidak membuka posisi baru. Cocok untuk entry       |
+//| manual (misalnya dari sinyal web Gold Desk).                      |
+//+------------------------------------------------------------------+
+#property copyright "Gold Desk"
+#property version   "1.00"
+#include <Trade\Trade.mqh>
+
+input bool   ManageAllMagic   = true;   // true = kelola semua posisi (termasuk manual)
+input ulong  OnlyMagic        = 0;      // dipakai jika ManageAllMagic = false (0 = posisi manual)
+input double BEStartDollars   = 3.0;    // Geser SL ke breakeven setelah profit sekian dolar
+input double BEOffsetDollars  = 0.3;    // SL breakeven digeser sekian dolar ke arah profit
+input double PartialAtDollars = 5.0;    // Tutup sebagian setelah profit sekian dolar (0 = mati)
+input double PartialPercent   = 50.0;   // Persen volume yang ditutup
+input double TrailStartDollars = 6.0;   // Trailing aktif setelah profit sekian dolar (0 = mati)
+input double TrailDistDollars = 3.0;    // Jarak trailing dari harga
+input double TrailStepDollars = 0.5;    // SL baru hanya digeser jika membaik minimal sekian dolar
+
+CTrade trade;
+ulong  doneTk[];
+
+bool IsDone(ulong tk)
+{
+   for(int i = 0; i < ArraySize(doneTk); i++)
+      if(doneTk[i] == tk) return(true);
+   return(false);
+}
+
+void AddDone(ulong tk)
+{
+   int n = ArraySize(doneTk);
+   ArrayResize(doneTk, n + 1);
+   doneTk[n] = tk;
+}
+
+double FloorVol(double v)
+{
+   double step = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_STEP);
+   if(step <= 0) step = 0.01;
+   return(NormalizeDouble(MathFloor(v / step) * step, 2));
+}
+
+int OnInit()
+{
+   return(INIT_SUCCEEDED);
+}
+
+void OnTick()
+{
+   double vmin = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
+   double minDist = SymbolInfoInteger(_Symbol, SYMBOL_TRADE_STOPS_LEVEL) * _Point;
+
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      ulong tk = PositionGetTicket(i);
+      if(tk == 0) continue;
+      if(PositionGetString(POSITION_SYMBOL) != _Symbol) continue;
+      if(!ManageAllMagic && (ulong)PositionGetInteger(POSITION_MAGIC) != OnlyMagic) continue;
+
+      long   type = PositionGetInteger(POSITION_TYPE);
+      double open = PositionGetDouble(POSITION_PRICE_OPEN);
+      double sl   = PositionGetDouble(POSITION_SL);
+      double tp   = PositionGetDouble(POSITION_TP);
+      double vol  = PositionGetDouble(POSITION_VOLUME);
+      double bid  = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+      double ask  = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+      bool   buy  = (type == POSITION_TYPE_BUY);
+      double profitDist = buy ? (bid - open) : (open - ask);
+      if(profitDist <= 0) continue;
+
+      // 1) Partial close (sekali per posisi)
+      if(PartialAtDollars > 0 && profitDist >= PartialAtDollars && !IsDone(tk))
+      {
+         double closeVol = FloorVol(vol * PartialPercent / 100.0);
+         if(closeVol >= vmin && vol - closeVol >= vmin)
+            trade.PositionClosePartial(tk, closeVol);
+         AddDone(tk);
+         continue;      // data posisi berubah, proses lagi di tick berikutnya
+      }
+
+      // 2) Breakeven
+      if(profitDist >= BEStartDollars)
+      {
+         double newSL = buy ? open + BEOffsetDollars : open - BEOffsetDollars;
+         newSL = NormalizeDouble(newSL, _Digits);
+         bool better = (sl == 0) || (buy ? newSL > sl : newSL < sl);
+         bool valid  = buy ? (newSL < bid - minDist) : (newSL > ask + minDist);
+         if(better && valid && trade.PositionModify(tk, newSL, tp)) sl = newSL;
+      }
+
+      // 3) Trailing stop
+      if(TrailStartDollars > 0 && profitDist >= TrailStartDollars)
+      {
+         double trailSL = buy ? bid - TrailDistDollars : ask + TrailDistDollars;
+         trailSL = NormalizeDouble(trailSL, _Digits);
+         bool better = (sl == 0) || (buy ? trailSL > sl + TrailStepDollars : trailSL < sl - TrailStepDollars);
+         bool valid  = buy ? (trailSL < bid - minDist) : (trailSL > ask + minDist);
+         if(better && valid) trade.PositionModify(tk, trailSL, tp);
+      }
+   }
+}
+</script>
+<script type="text/plain" id="code-guard">//+------------------------------------------------------------------+
+//| GoldDesk_RiskGuard.mq5                                            |
+//| Penjaga akun: kalau rugi harian mencapai batas, semua posisi      |
+//| ditutup dan pending dihapus, lalu akun "dikunci" sampai besok     |
+//| (posisi atau pending baru langsung ditutup). Juga membatasi       |
+//| jumlah posisi terbuka.                                            |
+//+------------------------------------------------------------------+
+#property copyright "Gold Desk"
+#property version   "1.00"
+#include <Trade\Trade.mqh>
+
+input double MaxDailyLossPct  = 3.0;    // Batas rugi harian (% dari equity awal hari)
+input int    MaxOpenPositions = 3;      // Maksimal posisi terbuka (0 = tidak dibatasi)
+input bool   OnlyThisSymbol   = false;  // true = hanya jaga simbol di chart ini
+
+CTrade   trade;
+double   dayStartEq = 0;
+int      curDay     = -1;
+bool     locked     = false;
+
+int OnInit()
+{
+   dayStartEq = AccountInfoDouble(ACCOUNT_EQUITY);
+   MqlDateTime d;
+   TimeToStruct(TimeCurrent(), d);
+   curDay = d.day_of_year;
+   EventSetTimer(1);
+   return(INIT_SUCCEEDED);
+}
+
+void OnDeinit(const int reason)
+{
+   EventKillTimer();
+   Comment("");
+}
+
+bool Mine(string sym)
+{
+   return(!OnlyThisSymbol || sym == _Symbol);
+}
+
+void CloseEverything()
+{
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      ulong tk = PositionGetTicket(i);
+      if(tk == 0) continue;
+      if(!Mine(PositionGetString(POSITION_SYMBOL))) continue;
+      trade.PositionClose(tk);
+   }
+   for(int j = OrdersTotal() - 1; j >= 0; j--)
+   {
+      ulong ot = OrderGetTicket(j);
+      if(ot == 0) continue;
+      if(!Mine(OrderGetString(ORDER_SYMBOL))) continue;
+      trade.OrderDelete(ot);
+   }
+}
+
+int CountPositions()
+{
+   int c = 0;
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      ulong tk = PositionGetTicket(i);
+      if(tk == 0) continue;
+      if(Mine(PositionGetString(POSITION_SYMBOL))) c++;
+   }
+   return(c);
+}
+
+// Tutup posisi yang paling baru dibuka
+void CloseNewest()
+{
+   ulong newest = 0;
+   datetime newestT = 0;
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      ulong tk = PositionGetTicket(i);
+      if(tk == 0) continue;
+      if(!Mine(PositionGetString(POSITION_SYMBOL))) continue;
+      datetime pt = (datetime)PositionGetInteger(POSITION_TIME);
+      if(pt >= newestT) { newestT = pt; newest = tk; }
+   }
+   if(newest != 0) trade.PositionClose(newest);
+}
+
+void OnTimer()
+{
+   MqlDateTime d;
+   TimeToStruct(TimeCurrent(), d);
+   if(d.day_of_year != curDay)          // hari baru: reset baseline dan buka kunci
+   {
+      curDay = d.day_of_year;
+      dayStartEq = AccountInfoDouble(ACCOUNT_EQUITY);
+      locked = false;
+   }
+
+   double eq = AccountInfoDouble(ACCOUNT_EQUITY);
+   double lossPct = dayStartEq > 0 ? (dayStartEq - eq) / dayStartEq * 100.0 : 0;
+
+   if(!locked && lossPct >= MaxDailyLossPct)
+   {
+      locked = true;
+      Print("RiskGuard: batas rugi harian tercapai (", DoubleToString(lossPct, 2), "%). Menutup semuanya.");
+   }
+   if(locked) CloseEverything();
+   else if(MaxOpenPositions > 0 && CountPositions() > MaxOpenPositions) CloseNewest();
+
+   Comment("Gold Desk RiskGuard\n",
+           "Equity awal hari: ", DoubleToString(dayStartEq, 2), "\n",
+           "Equity sekarang : ", DoubleToString(eq, 2), "\n",
+           "Rugi hari ini   : ", DoubleToString(lossPct, 2), "% (batas ", DoubleToString(MaxDailyLossPct, 2), "%)\n",
+           "Status          : ", locked ? "TERKUNCI sampai besok" : "aman");
+}
+
+void OnTick()
+{
+}
+</script>
 <script>
 (function(){
 'use strict';
@@ -241,14 +1173,16 @@ var hm=function(t){return new Date(t).toLocaleTimeString('en-GB',{timeZone:WIB,h
 var dayLbl=function(t){return new Date(t).toLocaleDateString('id-ID',{timeZone:WIB,weekday:'short',day:'numeric',month:'short'});};
 var mean=function(a){return a.reduce(function(x,y){return x+y;},0)/(a.length||1);};
 
+var EAS=[{"id": "smc", "name": "EA SMC (Pending Fibonacci)", "file": "GoldDesk_SMC.mq5", "risk": "Sedang", "tf": "H1 struktur, ATR M15", "type": "Pending limit", "ringkas": "Versi sederhana dari aturan SMC di web ini: struktur H1, order block, zona Fib 0.5 sampai 0.79, lalu pasang buy limit atau sell limit.", "fungsi": "Membaca struktur H1 (BOS dan CHoCH), mencari order block dari leg terakhir, menghitung zona Fibonacci 0.5 sampai 0.79, lalu memasang buy limit atau sell limit di tengah irisan order block dan zona Fib. SL ditaruh di luar order block dan TP di high atau low leg.", "kegunaan": "Buat yang mau entry di zona discount atau premium tanpa harus jaga layar, dan mau menguji aturan SMC secara obyektif di Strategy Tester.", "fitur": ["Entry berupa pending limit, bukan market order", "Lot dihitung otomatis dari persen risiko dan jarak SL", "SL di luar order block ditambah buffer ATR M15, minimal 1x ATR", "TP di high atau low leg, entry hanya jika RR minimal sesuai input", "Order block dianggap batal kalau sudah ada candle H1 yang ditutup menembusnya", "Pending kadaluarsa otomatis setelah beberapa jam", "Filter spread dan satu setup dalam satu waktu", "Dicek sekali per candle M15"], "kelebihan": ["Aturan jelas, jadi bisa di-backtest dan dibandingkan", "Entry di zona yang sudah direncanakan, bukan kejar harga", "Risiko per trade terukur, tanpa martingale", "Cocok dipasangkan dengan Trade Manager dan Risk Guard"], "kekurangan": ["Versi sederhana: order block H1 saja, tanpa FVG, IDM, dan penyempurnaan M15, jadi hasilnya bisa beda dari web", "SMC itu subjektif, aturan kaku bisa meleset dari penilaian mata", "Tidak ada filter news, matikan EA sebelum news besar", "Entry jarang muncul, bisa berhari-hari tanpa setup", "Kalau lot minimum broker lebih besar dari hitungan, lot minimum yang dipakai sehingga risiko bisa lebih besar", "Pending tidak dibatalkan kalau struktur berubah, hanya kadaluarsa", "Belum pernah di-backtest pada data asli"], "parameter": [["RiskPercent", "Risiko per trade dalam persen equity. Mulai dari 0.5 atau lebih kecil."], ["PivotLen", "Jumlah candle kiri dan kanan untuk menentukan swing. Makin besar, swing makin jarang."], ["FibTop dan FibBottom", "Batas zona Fibonacci, bawaan 0.5 sampai 0.79."], ["MinRR", "Minimal reward:risk. Setup di bawah ini diabaikan."], ["SLBufferATR dan MinSLATR", "Buffer SL dan jarak SL minimal, dalam kelipatan ATR M15."], ["PendingHours", "Pending dibatalkan setelah sekian jam."], ["MaxSpread", "Spread maksimal (points) saat memasang pending."], ["MagicNumber", "Penanda order milik EA ini."]], "cara": ["Pasang di chart XAUUSD, timeframe M15 cukup.", "Atur RiskPercent kecil, lalu nyalakan Algo Trading.", "Uji dulu di Strategy Tester, lalu di akun demo minimal 2 sampai 4 minggu.", "Bandingkan setup EA dengan sinyal web untuk melihat bedanya."], "peringatan": ["Kode belum dikompilasi di MetaEditor asli dan belum di-backtest pada data pasar.", "Bukan jaminan profit. Uji di akun demo sebelum uang asli."]}, {"id": "martingale", "name": "EA Martingale (dengan pengaman)", "file": "GoldDesk_Martingale.mq5", "risk": "Tinggi", "tf": "M15", "type": "Market order", "ringkas": "Buka posisi searah EMA, lot dikali pengali setelah kalah. Ada batas langkah, batas lot, dan batas rugi harian.", "fungsi": "Membuka satu posisi searah EMA 20 dan EMA 50 di M15. Kalau posisi kena SL, lot berikutnya dikali pengali. Kalau menang, lot kembali ke awal. EA berhenti sampai besok kalau kalah beruntun mencapai batas atau equity turun melewati batas harian.", "kegunaan": "Buat belajar dan melihat sendiri kenapa martingale berbahaya, dengan mengujinya di demo atau Strategy Tester. Bukan rekomendasi untuk uang asli.", "fitur": ["Lot awal dikali pengali setiap kalah beruntun", "Batas jumlah kalah beruntun (MaxSteps), lalu berhenti sampai besok", "Batas lot mutlak (MaxLot)", "Batas rugi harian dari equity awal hari", "Cek margin: margin yang dibutuhkan tidak boleh melewati separuh margin bebas", "Filter spread", "SL dan TP tetap dalam dolar"], "kelebihan": ["Winrate terlihat tinggi karena kerugian kecil sering tertutup satu kemenangan", "Sederhana dan mudah dipahami", "Pengaman bawaan membatasi kerusakan dibanding martingale tanpa batas"], "kekurangan": ["Satu rentetan kalah bisa menghapus banyak laba lama atau seluruh akun", "Lot membesar cepat. Contoh SL 5 dolar, lot awal 0.01, pengali 2: 3 kalah beruntun rugi 5+10+20 = 35 dolar. Kalau MaxSteps dinaikkan jadi 6, satu rentetan rugi 315 dolar dan lot terakhir 0.32", "Arah dari EMA tidak punya keunggulan nyata, martingale hanya mengatur ukuran lot", "Spread, slippage, dan lot maksimal broker bisa merusak hitungan", "Backtest sering terlihat bagus lalu gagal di akun asli", "Dengan TP dan SL sama besar, butuh winrate di atas 50 persen setelah biaya"], "parameter": [["BaseLot", "Lot awal."], ["Multiplier", "Pengali lot setelah kalah. Makin besar makin berbahaya."], ["MaxSteps", "Maksimal kalah beruntun sebelum berhenti hari itu."], ["MaxLot", "Batas lot mutlak."], ["SLDollars dan TPDollars", "Jarak SL dan TP dalam dolar."], ["MaxDailyLossPct", "Berhenti sampai besok kalau equity turun segini persen."], ["FastEMA dan SlowEMA", "Periode EMA arah di M15."], ["MaxSpread", "Spread maksimal (points)."]], "cara": ["Hanya pakai di akun demo atau Strategy Tester.", "Mulai dengan BaseLot terkecil dan MaxSteps 2 atau 3.", "Hitung dulu kerugian terburuk satu rentetan sebelum menyalakan.", "Pantau drawdown maksimal, bukan hanya profit."], "peringatan": ["BERISIKO TINGGI. Martingale bisa menghabiskan akun dalam satu rentetan kalah.", "Jangan dipakai di akun asli sebelum paham hitungan kerugian terburuknya.", "Kode belum dikompilasi di MetaEditor asli dan belum di-backtest."]}, {"id": "emarsi", "name": "EA EMA + RSI (ikut tren)", "file": "GoldDesk_EMA_RSI.mq5", "risk": "Sedang", "tf": "Timeframe chart", "type": "Market order", "ringkas": "Ikut tren dari persilangan EMA dengan filter RSI. SL berbasis ATR dan TP berdasarkan RR.", "fungsi": "Pada candle yang baru tertutup, EA melihat apakah EMA cepat baru memotong EMA lambat ke atas atau ke bawah. Buy hanya jika RSI di atas level filter, sell hanya jika di bawah. SL sejauh ATR dikali pengali dan TP sebesar SL dikali RR.", "kegunaan": "EA dasar buat belajar cara kerja EA trend following, dan sebagai pembanding sederhana buat strategi lain.", "fitur": ["Sinyal dari persilangan EMA pada candle tertutup", "Filter RSI supaya tidak melawan momentum", "SL dan TP berbasis ATR dan RR", "Lot dari persen risiko", "Satu posisi dalam satu waktu", "Filter spread"], "kelebihan": ["Sederhana, mudah dipahami dan dimodifikasi", "Risiko per trade terukur", "Bagus untuk belajar struktur EA"], "kekurangan": ["Sering whipsaw saat pasar sideways", "Sinyal datang terlambat karena EMA mengikuti harga", "Tidak ada filter news atau sesi", "Persilangan jarang terjadi di timeframe besar", "SL berbasis ATR bisa kena spike singkat"], "parameter": [["RiskPercent", "Risiko per trade dalam persen equity."], ["FastEMA dan SlowEMA", "Periode EMA cepat dan lambat."], ["RSIPeriod dan RSILevel", "Periode RSI dan batas filter arah."], ["ATRPeriod dan SLATR", "Periode ATR dan pengali jarak SL."], ["RR", "Reward:risk untuk TP."], ["MaxSpread", "Spread maksimal (points)."]], "cara": ["Pasang di chart XAUUSD dengan timeframe yang mau diuji, misalnya M15 atau H1.", "Uji beberapa kombinasi EMA di Strategy Tester.", "Jalankan di demo dulu dan catat hasilnya."], "peringatan": ["Kode belum dikompilasi di MetaEditor asli dan belum di-backtest.", "Bukan jaminan profit."]}, {"id": "asia", "name": "EA Breakout Sesi Asia", "file": "GoldDesk_AsiaBreakout.mq5", "risk": "Sedang", "tf": "M15", "type": "Pending stop (OCO)", "ringkas": "Pasang BuyStop di atas range pagi dan SellStop di bawahnya. Satu terisi, yang lain dihapus.", "fungsi": "Mengukur high dan low dari candle M15 pada jam range yang ditentukan (waktu server), lalu setelah range selesai memasang BuyStop sedikit di atas dan SellStop sedikit di bawah range. Saat salah satu terisi, pending lawan dihapus. Di jam akhir sesi semua pending dan posisi dibersihkan.", "kegunaan": "Buat strategi breakout sesi, terutama saat harga keluar dari range sempit menjelang sesi London atau New York.", "fitur": ["Range dihitung otomatis dari candle M15 hari ini", "BuyStop dan SellStop dengan OCO", "Satu setup per hari", "Lewati hari kalau range terlalu lebar atau harga sudah keluar range", "Pembersihan otomatis di akhir sesi", "Lot dari persen risiko dan jarak SL"], "kelebihan": ["Aturan sederhana dan jelas", "Tidak butuh prediksi arah", "Cocok untuk emas yang sering bergerak kuat saat sesi dibuka"], "kekurangan": ["Jam memakai waktu server broker, dan zona waktu server tiap broker bisa berbeda, jadi cek dulu", "False breakout cukup sering terjadi", "Slippage dan spread melebar saat breakout bisa merusak entry", "SL di sisi lawan range bisa lebar, jadi lot jadi kecil", "Kalau EA di-restart di tengah hari, pending bisa dipasang lagi", "Tidak ada filter news"], "parameter": [["RangeStartHour dan RangeEndHour", "Jam awal dan akhir range, waktu server."], ["TradeEndHour", "Jam pembersihan pending dan posisi, waktu server."], ["BufferDollars", "Jarak pending dari tepi range."], ["MaxRangeDollars", "Range lebih lebar dari ini dilewati."], ["RR", "Reward:risk untuk TP."], ["RiskPercent", "Risiko per trade."], ["MaxSpread", "Spread maksimal (points)."]], "cara": ["Cek jam server di Market Watch, lalu sesuaikan input jam.", "Pasang di chart XAUUSD M15.", "Uji di Strategy Tester dengan beberapa pengaturan jam, lalu demo."], "peringatan": ["Pastikan input jam sesuai waktu server broker lu, bukan waktu lokal.", "Kode belum dikompilasi di MetaEditor asli dan belum di-backtest."]}, {"id": "manager", "name": "Trade Manager (BE, partial, trailing)", "file": "GoldDesk_TradeManager.mq5", "risk": "Rendah", "tf": "Semua", "type": "Pengelola posisi", "ringkas": "Tidak membuka posisi. Mengelola posisi yang sudah ada: breakeven, partial close, dan trailing stop.", "fungsi": "Memantau posisi terbuka di simbol chart, lalu menggeser SL ke breakeven setelah profit tertentu, menutup sebagian volume sekali, dan menjalankan trailing stop. Bisa mengelola semua posisi atau hanya satu magic number.", "kegunaan": "Cocok kalau lu entry manual dari sinyal web, lalu mau posisi diamankan otomatis tanpa dijaga terus.", "fitur": ["Breakeven dengan offset kecil", "Partial close sekali per posisi", "Trailing stop dengan jarak dan langkah", "Bisa mengelola posisi manual (magic 0) atau semua magic", "Menghormati jarak minimal stop level broker"], "kelebihan": ["Aman karena tidak membuka posisi baru", "Mengurangi emosi dan lupa geser SL", "Cocok dipasangkan dengan entry manual atau EA lain"], "kekurangan": ["Status partial close hanya di memori, jadi hilang kalau EA di-restart atau MT5 ditutup", "Jarak memakai nilai dolar tetap, bukan ATR, jadi perlu disesuaikan kondisi pasar", "Trailing yang terlalu ketat memotong profit", "Tidak menolong entry yang buruk", "Perilaku bisa beda di akun netting dan hedging"], "parameter": [["ManageAllMagic dan OnlyMagic", "Kelola semua posisi atau hanya satu magic number."], ["BEStartDollars dan BEOffsetDollars", "Kapan SL digeser ke breakeven dan berapa offsetnya."], ["PartialAtDollars dan PartialPercent", "Kapan menutup sebagian dan berapa persen volumenya."], ["TrailStartDollars, TrailDistDollars, TrailStepDollars", "Kapan trailing mulai, jaraknya, dan langkah minimal pergeserannya."]], "cara": ["Pasang di chart XAUUSD, nyalakan Algo Trading.", "Entry manual seperti biasa di MT5.", "Atur jarak dolar sesuai gaya trading, lalu uji di demo."], "peringatan": ["Cek semua nilai dolar sebelum dipakai, karena bawaan hanya contoh.", "Kode belum dikompilasi di MetaEditor asli dan belum diuji."]}, {"id": "guard", "name": "Risk Guard (penjaga rugi harian)", "file": "GoldDesk_RiskGuard.mq5", "risk": "Rendah", "tf": "Semua", "type": "Pengaman akun", "ringkas": "Kalau rugi harian mencapai batas, semuanya ditutup dan akun dikunci sampai besok.", "fungsi": "Menghitung rugi hari ini dari equity awal hari. Kalau melewati batas, semua posisi ditutup dan pending dihapus, lalu EA terus menutup posisi atau pending baru sampai hari berikutnya. Juga membatasi jumlah posisi terbuka dengan menutup yang paling baru.", "kegunaan": "Pengaman disiplin buat yang takut revenge trading atau lupa batas rugi harian.", "fitur": ["Batas rugi harian dalam persen", "Kunci sampai hari berikutnya", "Batas jumlah posisi terbuka", "Opsi hanya menjaga simbol di chart", "Panel status di chart"], "kelebihan": ["Memaksa disiplin saat emosi", "Melindungi dari hari yang sangat buruk", "Tidak membuka posisi apa pun, jadi tidak menambah risiko"], "kekurangan": ["Menutup posisi yang sedang rugi, jadi kerugian benar-benar terealisasi", "Baseline equity salah kalau EA dinyalakan setelah hari itu sudah rugi", "Hari dihitung memakai waktu server broker", "Tidak mencegah order manual, hanya menutupnya dengan cepat, jadi spread dan slippage tetap terbayar", "Bukan pengganti SL"], "parameter": [["MaxDailyLossPct", "Batas rugi harian dalam persen equity awal hari."], ["MaxOpenPositions", "Batas posisi terbuka, 0 berarti tidak dibatasi."], ["OnlyThisSymbol", "Jaga hanya simbol chart ini atau semua simbol."]], "cara": ["Pasang di satu chart mana saja dan nyalakan Algo Trading.", "Nyalakan di awal hari supaya baseline equity benar.", "Biarkan menyala selama MT5 terbuka."], "peringatan": ["Uji di demo dulu supaya paham perilaku penguncian.", "Kode belum dikompilasi di MetaEditor asli dan belum diuji."]}];
+var EAG={"note": "Sintaks kode sudah dicek dengan alat bantu dan EA SMC sudah dijalankan di ribuan data acak tanpa crash, tapi belum ada yang dikompilasi di MetaEditor asli. Kalau muncul error saat Compile (F7), kirim pesan errornya ke Claude biar diperbaiki. Semua EA wajib diuji di akun demo dulu.", "install": ["Unduh file .mq5 dari halaman EA, atau salin kodenya.", "Di MT5 desktop: File, Open Data Folder, MQL5, Experts, lalu taruh file .mq5 di sana. Atau buka MetaEditor (F4), File, New, Expert Advisor, lalu tempel kode.", "Di MetaEditor tekan Compile (F7) dan pastikan tidak ada error.", "Di MT5, panel Navigator, Expert Advisors, klik kanan Refresh, lalu seret EA ke chart XAUUSD.", "Di jendela EA, tab Common centang Allow Algo Trading, tab Inputs atur parameter. Nyalakan tombol Algo Trading di toolbar.", "Cek nama simbol di Market Watch karena broker bisa memakai akhiran huruf. Pasang EA di chart simbol yang sama dengan yang lu trade.", "Aplikasi MT5 di HP tidak menjalankan EA. Pakai laptop atau VPS yang menyala terus."], "test": ["Buka Strategy Tester (Ctrl+R), pilih EA, simbol XAUUSD, dan periode minimal 3 sampai 6 bulan.", "Pilih model Every tick based on real ticks kalau tersedia, dan deposit yang sama dengan akun lu.", "Lihat drawdown maksimal, profit factor, dan jumlah trade, bukan hanya total profit.", "Lanjut ke akun demo minimal 2 sampai 4 minggu dan bandingkan dengan hasil tester.", "Baru kalau konsisten, pertimbangkan akun asli dengan modal kecil dan lot minimum."], "check": ["Paham hitungan kerugian terburuk per trade dan per hari", "Risiko per trade 1 persen atau kurang", "Sudah cek jam server dan nama simbol broker", "Sudah uji di Strategy Tester dan demo", "Ada rencana kalau EA error atau koneksi putus", "Tahu cara mematikan EA dan menutup posisi manual"], "gloss": [["Magic number", "Nomor penanda order milik satu EA, supaya tidak tercampur dengan order lain."], ["Pending order", "Order yang menunggu harga: limit (menunggu harga balik) atau stop (menunggu harga tembus)."], ["Slippage", "Selisih antara harga yang diminta dan harga eksekusi, sering besar saat news."], ["Spread", "Selisih harga beli dan jual, biaya yang langsung dibayar tiap order."], ["Drawdown", "Penurunan equity dari puncak ke titik terendah."], ["Profit factor", "Total profit dibagi total rugi. Di atas 1 berarti untung, makin tinggi makin baik."], ["Breakeven", "SL digeser ke harga entry supaya tidak rugi kalau harga berbalik."], ["Partial close", "Menutup sebagian volume posisi."], ["Trailing stop", "SL yang mengikuti harga saat bergerak menguntungkan."], ["Hedging dan netting", "Akun hedging boleh punya beberapa posisi berlawanan di satu simbol, akun netting menggabungkannya jadi satu posisi."], ["ATR", "Ukuran rata-rata rentang pergerakan harga, dipakai untuk jarak SL yang menyesuaikan volatilitas."]]};
 var S={tf:'15m',raw:[],rawH:[],smc:null,offset:0,src:'',feedOk:false,spot:null,events:[],evSrc:'',
-  active:null,analysis:null,analysisAt:0,history:[],manual:[],actuals:{},selDay:null,show:{fib:true,zone:true,struct:true},cv:'own',auto:false,lastAuto:0,inspT:null,cross:null,crossAt:0,lastOk:0,ac:null,cm:null,feedEv:[],openEv:null,
+  active:null,analysis:null,analysisAt:0,history:[],manual:[],actuals:{},selDay:null,page:'home',eaSel:null,eaTab:'info',deferred:null,evLoaded:false,evErr:'',show:{fib:true,zone:true,struct:true},cv:'own',auto:false,lastAuto:0,inspT:null,cross:null,crossAt:0,lastOk:0,ac:null,cm:null,feedEv:[],openEv:null,
   minScore:7,busy:false,calBusy:false};
 
 /* ---------- penyimpanan (localStorage Chrome) ---------- */
 var KEY='golddesk:chrome:v1';
 function save(){
-  try{localStorage.setItem(KEY,JSON.stringify({offset:S.offset,active:S.active,history:S.history,manual:S.manual,actuals:S.actuals,minScore:S.minScore,tf:S.tf,show:S.show,auto:S.auto}));}catch(e){}
+  try{localStorage.setItem(KEY,JSON.stringify({offset:S.offset,active:S.active,history:S.history,manual:S.manual,actuals:S.actuals,minScore:S.minScore,tf:S.tf,show:S.show,auto:S.auto,page:S.page}));}catch(e){}
 }
 function load(){
   try{
@@ -256,7 +1190,7 @@ function load(){
     if(typeof d.offset==='number')S.offset=d.offset;
     S.active=d.active||null;S.history=d.history||[];S.actuals=d.actuals||{};
     S.manual=(d.manual||[]).filter(function(e){return e.time>Date.now()-7*864e5;});
-    if(d.minScore)S.minScore=d.minScore;if(d.tf)S.tf=d.tf;if(d.show)S.show=d.show;S.auto=!!d.auto;
+    if(d.minScore)S.minScore=d.minScore;if(d.tf)S.tf=d.tf;if(d.show)S.show=d.show;S.auto=!!d.auto;if(d.page)S.page=d.page;
   }catch(e){}
 }
 
@@ -602,24 +1536,64 @@ function bkRestore(){
 
 /* ---------- kalender news ---------- */
 function rebuildEvents(){
-  S.events=S.feedEv.concat(S.manual).sort(function(a,b){return a.time-b.time;});
+  var seen={};
+  S.events=S.feedEv.concat(S.manual).filter(function(e){if(seen[e.id])return false;seen[e.id]=1;return true;}).sort(function(a,b){return a.time-b.time;});
+}
+async function fetchJSON(url){
+  var r=await fetch(url);
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  var t=await r.text();
+  try{return JSON.parse(t);}catch(e){throw new Error('bukan JSON');}
+}
+function parseFF(j){
+  var out=[];
+  j.forEach(function(e){
+    if(e.country==='USD'&&e.impact==='High'){
+      var t=new Date(e.date).getTime();
+      if(!isNaN(t))out.push({id:e.title+'|'+e.date,title:e.title,time:t,forecast:e.forecast||'',previous:e.previous||''});
+    }
+  });
+  return out;
+}
+function parseLocal(j){
+  var out=[];
+  (Array.isArray(j)?j:[]).forEach(function(e){
+    var t=new Date(e.date).getTime();
+    if(e&&e.title&&!isNaN(t))out.push({id:e.title+'|'+e.date,title:String(e.title),time:t,forecast:String(e.forecast||''),previous:String(e.previous||'')});
+  });
+  return out;
 }
 async function loadCalendar(){
-  var urls=['https://nfs.faireconomy.media/ff_calendar_thisweek.json','https://nfs.faireconomy.media/ff_calendar_nextweek.json'],all=[],ok=0;
-  for(var i=0;i<urls.length;i++){
-    try{
-      var r=await fetch(urls[i]);if(!r.ok)continue;
-      var j=await r.json();ok++;
-      j.forEach(function(e){
-        if(e.country==='USD'&&e.impact==='High'){
-          var t=new Date(e.date).getTime();
-          if(!isNaN(t))all.push({id:e.title+'|'+e.date,title:e.title,time:t,forecast:e.forecast||'',previous:e.previous||''});
-        }
-      });
-    }catch(e){}
+  var names=['thisweek','nextweek'],base='https://nfs.faireconomy.media/ff_calendar_',all=[],ok=0,errs=[];
+  var routes=[
+    function(u){return u;},
+    function(u){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u);},
+    function(u){return 'https://corsproxy.io/?'+encodeURIComponent(u);}
+  ];
+  for(var i=0;i<names.length;i++){
+    var url=base+names[i]+'.json',got=false;
+    for(var p=0;p<routes.length&&!got;p++){
+      try{
+        var j=await fetchJSON(routes[p](url));
+        if(!Array.isArray(j))throw new Error('format');
+        all=all.concat(parseFF(j));ok++;got=true;
+      }catch(e){
+        if(i===0)errs.push((p===0?'langsung':'proxy '+p)+': '+(e&&e.message?e.message:'gagal'));
+      }
+    }
   }
+  var src='ForexFactory feed';
+  if(!ok){
+    try{
+      var k=await fetchJSON('kalender.json?'+Date.now());
+      all=parseLocal(k);
+      if(all.length){ok=1;src='kalender.json (diperbarui manual)';}else errs.push('kalender.json: kosong');
+    }catch(e){errs.push('kalender.json: '+(e&&e.message?e.message:'gagal'));}
+  }
+  S.evErr=ok?'':errs.join(' | ');
   S.feedEv=all;
-  S.evSrc=ok?('ForexFactory feed'+(S.manual.length?' + input manual':'')):(S.manual.length?'input manual':'');
+  S.evSrc=ok?(src+(S.manual.length?' + input manual':'')):(S.manual.length?'input manual':'');
+  S.evLoaded=true;
   rebuildEvents();renderNews();renderSignal();
 }
 function addManual(){
@@ -685,6 +1659,7 @@ function renderHero(){
       chg='<span class="'+(d>=0?'up':'dn')+'">'+(d>=0?'+':'')+f2(d)+' ('+(d>=0?'+':'')+pc.toFixed(2)+'%) 24 jam</span>';}
   }
   $('#chg').innerHTML=chg;
+  var bp=$('#barPx'),bc=$('#barChg');if(bp)bp.textContent=p==null?'-':f2(p);if(bc)bc.innerHTML=chg.replace(' 24 jam','');
   $('#feed').innerHTML='Feed: <b>'+esc(S.src||'memuat')+'</b>';
   $('#offLbl').textContent=S.offset?'selisih '+(S.offset>0?'+':'')+f2(S.offset)+' dari feed':'';
   var b=$('#banner'),msg='';
@@ -705,6 +1680,15 @@ function mountTV(){
   sc.innerHTML=JSON.stringify({autosize:true,symbol:'OANDA:XAUUSD',interval:'15',timezone:'Asia/Jakarta',theme:'dark',style:'1',locale:'id',hide_side_toolbar:true,allow_symbol_change:false});
   box.firstChild.appendChild(sc);
 }
+function mountTVCal(){
+  var box=$('#tvCalBox');if(!box||box.getAttribute('data-ready'))return;
+  box.setAttribute('data-ready','1');
+  box.innerHTML='<div class="tradingview-widget-container" style="height:100%;width:100%"><div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div></div>';
+  var sc=document.createElement('script');
+  sc.src='https://s3.tradingview.com/external-embedding/embed-widget-events.js';sc.async=true;
+  sc.innerHTML=JSON.stringify({colorTheme:'dark',isTransparent:true,locale:'id',countryFilter:'us',importanceFilter:'0,1',width:'100%',height:'480'});
+  box.firstChild.appendChild(sc);
+}
 function renderToggles(){
   var el=$('#tgl');if(!el)return;
   var h='';
@@ -713,7 +1697,7 @@ function renderToggles(){
   el.innerHTML=h;
   $('#chart').style.display=S.cv==='own'?'block':'none';
   $('#tvBox').style.display=S.cv==='tv'?'block':'none';
-  if(S.cv==='tv')mountTV();
+  if(S.cv==='tv'){mountTV();var ip=$('#insp');if(ip)ip.textContent='';}
 }
 function drawChart(){
   var cv=$('#chart'),ctx=cv.getContext('2d'),dpr=window.devicePixelRatio||1;
@@ -868,7 +1852,7 @@ function renderNews(){
   chips+='</div>';
   h+=chips;
   if(!S.events.length){
-    h+='<p class="muted">Kalender otomatis belum termuat (sumber gratis kadang diblokir). Coba muat lagi, atau tambah news manual di bawah.</p><div class="row"><button class="ghost" data-act="calReload">Coba muat lagi</button></div>';
+    h+=(!S.evLoaded?'<p class="muted">Memuat kalender...</p>':'<p class="muted">Kalender otomatis belum termuat. Coba muat lagi, buka kalender TradingView di bawah, atau tambah news manual.</p>'+(S.evErr?'<p class="muted" style="font-size:12px">Alasan gagal: '+esc(S.evErr)+'</p>':'')+'<div class="row"><button class="ghost" data-act="calReload">Coba muat lagi</button></div>');
   }else{
     var list=S.events.filter(function(e){return dayKey(e.time)===S.selDay;});
     h+='<p class="muted" style="font-size:13px;margin:0 0 8px">'+esc(dayFull(S.selDay))+'</p>';
@@ -912,6 +1896,7 @@ function renderHistory(){
   if(!H.length){h+='<p class="muted">Belum ada. Sinyal yang kena TP atau SL akan tercatat otomatis di sini.</p>';}
   else{
     h+='<div class="stats"><div><b>'+H.length+'</b>sinyal</div><div><b>'+Math.round(w/H.length*100)+'%</b>menang</div><div><b class="'+(net>=0?'up':'dn')+'">'+(net>=0?'+':'')+f2(net)+'</b>total dolar</div></div>';
+    h+='<p class="muted" style="font-size:13px;margin:4px 0 8px">7 hari terakhir: '+(function(){var c=Date.now()-7*864e5,a=H.filter(function(x){return x.t1>=c;});return a.length+' selesai, '+a.filter(function(x){return x.res==='TP';}).length+' TP, '+a.filter(function(x){return x.res==='SL';}).length+' SL';})()+'</p>';
     h+=H.slice(0,30).map(function(x){return '<div class="h-row"><span class="chip">Entry '+f2(x.entry)+'</span><span class="chip '+(x.res==='TP'?'win':'loss')+'">HIT '+x.res+'</span><span class="'+(x.dir==='BUY'?'up':'dn')+'">'+x.dir+'</span><span class="muted">'+(x.pts>=0?'+':'')+f2(x.pts)+(x.manual?' manual':'')+'</span><span class="muted" style="margin-left:auto">'+dayLbl(x.t1)+' '+hm(x.t1)+'</span></div>';}).join('');
     h+='<div class="row"><button class="ghost" data-act="clearHist">Hapus history</button></div>';
   }
@@ -941,7 +1926,95 @@ function calc(){
   o.textContent=(Math.floor(lot*100)/100).toFixed(2)+' lot';
   n.textContent='Risiko sekitar $'+f2(risk$)+' jika SL kena. Hitungan memakai 1 lot = 100 oz; cek ukuran kontrak di broker lu.';
 }
-function renderAll(){renderHero();renderToggles();drawChart();renderBias();renderSignal();renderNews();renderHistory();renderSessions();renderSrc();}
+
+/* ---------- halaman (menu bawah) ---------- */
+var PAGES=['home','signal','news','ea','tools'];
+var PAGE_T={home:'Beranda',signal:'Signal',news:'News',ea:'EA',tools:'Alat'};
+function showPage(p){
+  if(PAGES.indexOf(p)<0)p='home';
+  S.page=p;
+  PAGES.forEach(function(k){var el=$('#pg-'+k);if(el)el.hidden=(k!==p);});
+  Array.prototype.forEach.call(document.querySelectorAll('.nav button'),function(b){
+    if(b.getAttribute('data-p')===p)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
+  });
+  var bt=$('#barTitle');if(bt)bt.textContent=PAGE_T[p];
+  save();
+  try{window.scrollTo({top:0});}catch(e){}
+  if(p==='home'){renderToggles();drawChart();}
+  if(p==='ea')renderEA();
+}
+function renderHomeSig(){
+  var el=$('#homeSig');if(!el)return;
+  var h='<div class="card-h"><h2>Sinyal</h2><button class="ghost" data-act="page" data-p="signal" style="min-height:34px;padding:4px 12px">Buka</button></div>';
+  if(S.active)h+=ticket(S.active);
+  else{
+    var r=S.analysis;
+    h+='<p><span class="live-dot"></span>Menunggu sinyal berikutnya</p>';
+    if(r)h+='<p class="muted" style="font-size:13px">Analisa terakhir '+hm(S.analysisAt)+' WIB: '+esc(r.dir)+(r.checks&&r.checks.length?' (skor '+r.score+'/'+r.checks.length+')':'')+'.</p>';
+  }
+  h+='<div class="row"><button class="primary" data-act="analyze"'+(S.busy?' disabled':'')+'>'+(S.busy?'Menganalisa...':'Analisa sekarang')+'</button></div>';
+  el.innerHTML=h;
+}
+
+/* ---------- halaman EA ---------- */
+function eaCode(e){var n=$('#code-'+e.id);return n?String(n.textContent).replace(/^\n/,''):'';}
+function curEA(){return EAS.filter(function(x){return x.id===S.eaSel;})[0];}
+function eaMsg(t){var m=$('#eaMsg');if(m)m.textContent=t;}
+function liList(a,cls){return '<ul class="bullets'+(cls?' '+cls:'')+'">'+a.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>';}
+function renderEA(){
+  var el=$('#eaRoot');if(!el)return;
+  var h='';
+  if(!S.eaSel){
+    h+='<div class="card"><p style="margin-top:0">Kumpulan EA (Expert Advisor) buat MT5. Ketuk satu EA untuk melihat penjelasan dan kodenya.</p><p class="muted" style="font-size:13px;margin-bottom:0">'+esc(EAG.note)+'</p></div>';
+    h+='<div class="list" style="margin-top:12px">'+EAS.map(function(e){
+      return '<button class="ev eacard" data-act="eaOpen" data-id="'+esc(e.id)+'"><span><b>'+esc(e.name)+'</b><small>'+esc(e.ringkas)+'</small><span class="chips"><span class="chip">'+esc(e.type)+'</span><span class="chip">'+esc(e.tf)+'</span></span></span><span class="rk rk-'+esc(e.risk)+'">'+esc(e.risk)+'</span></button>';
+    }).join('')+'</div>';
+    h+='<div class="card" style="margin-top:12px"><details><summary>Cara pasang EA di MT5</summary>'+liList(EAG.install,'')+'</details></div>';
+    h+='<div class="card"><details><summary>Cara uji sebelum akun asli</summary><ol class="bullets">'+EAG.test.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ol></details></div>';
+    h+='<div class="card"><details><summary>Checklist sebelum pakai uang asli</summary>'+liList(EAG.check,'')+'</details></div>';
+    h+='<div class="card"><details><summary>Istilah penting</summary><dl class="gl">'+EAG.gloss.map(function(g){return '<dt>'+esc(g[0])+'</dt><dd>'+esc(g[1])+'</dd>';}).join('')+'</dl></details></div>';
+  }else{
+    var e=curEA();
+    if(!e){S.eaSel=null;renderEA();return;}
+    h+='<button class="ghost" data-act="eaBack">Kembali ke daftar</button>';
+    h+='<div class="card" style="margin-top:12px"><div class="card-h"><h2>'+esc(e.name)+'</h2><span class="rk rk-'+esc(e.risk)+'">Risiko '+esc(e.risk)+'</span></div><p class="muted" style="margin:0">'+esc(e.ringkas)+'</p><div class="chips"><span class="chip">'+esc(e.type)+'</span><span class="chip">'+esc(e.tf)+'</span><span class="chip">'+esc(e.file)+'</span></div></div>';
+    h+='<div class="tfs" role="group" aria-label="Bagian" style="margin:12px 0"><button data-act="eaTab" data-k="info" aria-pressed="'+(S.eaTab==='info'?'true':'false')+'">Penjelasan</button><button data-act="eaTab" data-k="code" aria-pressed="'+(S.eaTab==='code'?'true':'false')+'">Kode</button></div>';
+    if(S.eaTab==='info'){
+      h+='<div class="card">';
+      h+='<h4 style="margin-top:0">Fungsi</h4><p style="margin:0">'+esc(e.fungsi)+'</p>';
+      h+='<h4>Kegunaan</h4><p style="margin:0">'+esc(e.kegunaan)+'</p>';
+      h+='<h4>Fitur</h4>'+liList(e.fitur);
+      h+='<h4>Kelebihan</h4>'+liList(e.kelebihan);
+      h+='<h4>Kekurangan</h4>'+liList(e.kekurangan);
+      h+='<h4>Parameter penting</h4><div>'+e.parameter.map(function(x){return '<div class="kv"><span>'+esc(x[0])+'</span><b style="font-weight:400;color:var(--text)">'+esc(x[1])+'</b></div>';}).join('')+'</div>';
+      h+='<h4>Cara pakai</h4><ol class="bullets">'+e.cara.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ol>';
+      h+='<h4>Peringatan</h4><div class="warnbox">'+e.peringatan.map(function(x){return '<p>'+esc(x)+'</p>';}).join('')+'</div>';
+      h+='</div>';
+    }else{
+      var code=eaCode(e),lines=code?code.split('\n').length:0;
+      h+='<div class="card"><div class="row" style="margin-top:0"><button class="primary" data-act="eaCopy">Salin kode</button><button data-act="eaDl">Unduh '+esc(e.file)+'</button></div><p id="eaMsg" class="muted" style="font-size:13px;margin:8px 0 0"></p><p class="muted" style="font-size:12px;margin:4px 0 0">'+lines+' baris. Tempel di MetaEditor lalu tekan Compile (F7).</p><pre class="code" tabindex="0">'+esc(code)+'</pre></div>';
+    }
+  }
+  el.innerHTML=h;
+}
+function eaCopy(){
+  var e=curEA();if(!e)return;
+  var code=eaCode(e);
+  try{navigator.clipboard.writeText(code).then(function(){eaMsg('Kode tersalin.');},function(){eaMsg('Gagal menyalin. Tekan lama di kotak kode lalu pilih semua.');});}
+  catch(x){eaMsg('Gagal menyalin. Tekan lama di kotak kode lalu pilih semua.');}
+}
+function eaDownload(){
+  var e=curEA();if(!e)return;
+  try{
+    var b=new Blob(['\uFEFF'+eaCode(e)],{type:'text/plain;charset=utf-8'});
+    var u=URL.createObjectURL(b),a=document.createElement('a');
+    a.href=u;a.download=e.file;document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u);},800);
+    eaMsg('Mengunduh '+e.file+'. Cek folder Download.');
+  }catch(x){eaMsg('Gagal mengunduh. Pakai tombol Salin kode.');}
+}
+
+function renderAll(){renderHero();renderToggles();drawChart();renderBias();renderSignal();renderNews();renderHistory();renderSessions();renderSrc();renderHomeSig();}
 
 /* ---------- event ---------- */
 document.addEventListener('click',function(e){
@@ -963,6 +2036,13 @@ document.addEventListener('click',function(e){
   else if(act==='addEvent')addManual();
   else if(act==='closeSheet'){S.openEv=null;renderSheet();}
   else if(act==='clearHist'){S.history=[];save();renderHistory();}
+  else if(act==='page'){showPage(b.getAttribute('data-p'));}
+  else if(act==='eaOpen'){S.eaSel=b.getAttribute('data-id');S.eaTab='info';renderEA();try{window.scrollTo({top:0});}catch(x){}}
+  else if(act==='eaBack'){S.eaSel=null;renderEA();try{window.scrollTo({top:0});}catch(x){}}
+  else if(act==='eaTab'){S.eaTab=b.getAttribute('data-k');renderEA();}
+  else if(act==='eaCopy')eaCopy();
+  else if(act==='eaDl')eaDownload();
+  else if(act==='install'){if(S.deferred){S.deferred.prompt();S.deferred=null;var bi=$('#btnInstall');if(bi)bi.hidden=true;}}
   else if(act==='go'){var t=b.getAttribute('data-t');if(t==='top')window.scrollTo({top:0,behavior:'smooth'});else{var nn=$(t);if(nn)nn.scrollIntoView({behavior:'smooth',block:'start'});}}
   else if(act==='cv'){S.cv=b.getAttribute('data-k');renderToggles();if(S.cv==='own')drawChart();}
   else if(act==='tg'){var kx=b.getAttribute('data-k');S.show[kx]=!S.show[kx];save();renderToggles();drawChart();}
@@ -978,7 +2058,12 @@ window.addEventListener('resize',drawChart);
 
 (async function init(){
   await load();
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();S.deferred=e;var bi=$('#btnInstall');if(bi)bi.hidden=false;});
+  window.addEventListener('appinstalled',function(){S.deferred=null;var bi=$('#btnInstall');if(bi)bi.hidden=true;});
+  try{if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
+  showPage(S.page||'home');
   document.addEventListener('click',unlockAudio,{once:true});
+  var tvd=$('#tvCalDet');if(tvd)tvd.addEventListener('toggle',function(){if(tvd.open)mountTVCal();});
   document.addEventListener('visibilitychange',function(){if(!document.hidden)document.title='Gold Desk SMC - XAUUSD';});
   var cvEl=$('#chart');if(cvEl)cvEl.addEventListener('click',function(e){var cm=S.cm;if(!cm)return;var r=this.getBoundingClientRect(),i=Math.floor((e.clientX-r.left-cm.L)/cm.cw);if(i<0||i>=cm.data.length)return;var t=cm.data[i].t;S.inspT=S.inspT===t?null:t;drawChart();});
   renderAll();
