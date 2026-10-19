@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1a1712">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -135,7 +135,7 @@ main{padding-bottom:88px}
 .page[hidden]{display:none}
 .pg-h{margin:4px 0 2px;font-size:26px}
 main{max-width:760px}
-.bar{position:sticky;top:0;z-index:4;display:flex;align-items:baseline;gap:10px;background:var(--bg);border-bottom:1px solid var(--line);margin:-14px -14px 12px;padding:9px 14px}
+.topbar{position:sticky;top:0;z-index:4;display:flex;align-items:baseline;gap:10px;background:var(--bg);border-bottom:1px solid var(--line);margin:-14px -14px 12px;padding:9px 14px}
 .bar-t{font-family:var(--serif);font-size:17px;font-weight:600;margin-right:auto}
 .bar-px{font-family:var(--serif);font-size:18px;font-variant-numeric:tabular-nums}
 .bar-c{font-size:12px;font-variant-numeric:tabular-nums}
@@ -158,11 +158,74 @@ pre.code{background:#120f0b;border:1px solid var(--line);border-radius:10px;padd
 ol.bullets{padding-left:20px}
 .gl dt{font-weight:600;margin-top:8px}
 .gl dd{margin:2px 0 0;color:var(--muted);font-size:14px}
+
+/* ====== tema warna per halaman ====== */
+:root{--accent:#e3b04b;--accent-rgb:227,176,75}
+body[data-page="signal"]{--accent:#4fc3d9;--accent-rgb:79,195,217}
+body[data-page="news"]{--accent:#6f9bff;--accent-rgb:111,155,255}
+body[data-page="ea"]{--accent:#b794ff;--accent-rgb:183,148,255}
+body[data-page="tools"]{--accent:#f19a6b;--accent-rgb:241,154,107}
+main{padding-bottom:128px}
+.topbar{border-bottom:1px solid rgba(var(--accent-rgb),.35)}
+.card{background:linear-gradient(180deg,rgba(var(--accent-rgb),.08),transparent 42%),var(--surface);border-color:rgba(var(--accent-rgb),.22);box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.card h2::before{content:"";display:inline-block;width:4px;height:16px;border-radius:2px;background:var(--accent);margin-right:8px;vertical-align:-2px}
+.hero{background:radial-gradient(120% 140% at 0% 0%,rgba(var(--accent-rgb),.2),transparent 62%),linear-gradient(180deg,var(--surface),#1d1913);border:1px solid rgba(var(--accent-rgb),.3);border-radius:18px;padding:16px}
+.px{background:linear-gradient(180deg,#fff7e3,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.pg-h{background:linear-gradient(90deg,var(--accent),#fff4dc);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block;justify-self:start}
+h4,summary,.link{color:var(--accent)}
+button.primary{background:linear-gradient(135deg,var(--accent),rgba(var(--accent-rgb),.78));border-color:var(--accent);color:#16120d}
+.tfs button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:rgba(var(--accent-rgb),.12)}
+.day[aria-pressed="true"]{background:rgba(var(--accent-rgb),.12)}
+.day i.dot{background:var(--accent)}
+.ev{border-left:3px solid var(--sell)}
+.ev.past{border-left-color:var(--line)}
+.eac-Rendah{border-left:3px solid var(--buy)}
+.eac-Sedang{border-left:3px solid var(--gold)}
+.eac-Tinggi{border-left:3px solid var(--sell)}
+.ticket{background:linear-gradient(135deg,rgba(var(--accent-rgb),.14),var(--raised))}
+/* ====== menu bawah melayang ====== */
+.nav{left:50%;right:auto;width:min(540px,calc(100% - 24px));transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));padding:6px;gap:4px;border:1px solid rgba(255,255,255,.1);border-radius:24px;background:rgba(32,28,22,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.4);overflow:hidden}
+.nav button{border:0;border-radius:18px;min-height:56px;color:var(--muted);transition:background-color .25s,color .25s,transform .12s}
+.nav button[data-p="home"]{--c:227,176,75}
+.nav button[data-p="signal"]{--c:79,195,217}
+.nav button[data-p="news"]{--c:111,155,255}
+.nav button[data-p="ea"]{--c:183,148,255}
+.nav button[data-p="tools"]{--c:241,154,107}
+.nav button[aria-current="page"]{color:rgb(var(--c));background:rgba(var(--c),.16)}
+/* ====== animasi ====== */
+button{transition:transform .12s,background-color .2s,border-color .2s,color .2s}
+button:active{transform:scale(.97)}
+.ev:active{transform:scale(.99)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(229,112,90,.6)}70%{box-shadow:0 0 0 9px rgba(229,112,90,0)}100%{box-shadow:0 0 0 0 rgba(229,112,90,0)}}
+@keyframes flashUp{0%{filter:drop-shadow(0 0 12px rgba(95,191,154,.95))}100%{filter:none}}
+@keyframes flashDn{0%{filter:drop-shadow(0 0 12px rgba(229,112,90,.95))}100%{filter:none}}
+@keyframes toastIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes sheetUp{from{transform:translateY(44px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.page:not([hidden])>*{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.page:not([hidden])>*:nth-child(2){animation-delay:.05s}
+.page:not([hidden])>*:nth-child(3){animation-delay:.1s}
+.page:not([hidden])>*:nth-child(4){animation-delay:.15s}
+.page:not([hidden])>*:nth-child(5){animation-delay:.2s}
+.page:not([hidden])>*:nth-child(6){animation-delay:.25s}
+.page:not([hidden])>*:nth-child(7){animation-delay:.3s}
+.page:not([hidden])>*:nth-child(8){animation-delay:.35s}
+#eaRoot>*{animation:rise .4s cubic-bezier(.2,.8,.2,1) both}
+.live-dot{animation:pulse 1.8s infinite}
+.nav button[aria-current="page"] svg{animation:pop .4s}
+[data-flash="up"]{animation:flashUp .9s ease-out}
+[data-flash="dn"]{animation:flashDn .9s ease-out}
+.sheet:not([hidden]){animation:fadeIn .2s}
+.panel{animation:sheetUp .32s cubic-bezier(.2,.8,.2,1)}
+.toast:not([hidden]){animation:toastIn .3s}
+.bar i{transition:left .6s ease}
 </style>
 </head>
 <body>
 <main>
-  <div class="bar" id="bar"><span id="barTitle" class="bar-t">Beranda</span><span id="barPx" class="bar-px">-</span><span id="barChg" class="bar-c"></span></div>
+  <div class="topbar" id="bar"><span id="barTitle" class="bar-t">Beranda</span><span id="barPx" class="bar-px">-</span><span id="barChg" class="bar-c"></span></div>
 
   <section class="page" id="pg-home">
     <header class="top">
@@ -1176,7 +1239,7 @@ var mean=function(a){return a.reduce(function(x,y){return x+y;},0)/(a.length||1)
 var EAS=[{"id": "smc", "name": "EA SMC (Pending Fibonacci)", "file": "GoldDesk_SMC.mq5", "risk": "Sedang", "tf": "H1 struktur, ATR M15", "type": "Pending limit", "ringkas": "Versi sederhana dari aturan SMC di web ini: struktur H1, order block, zona Fib 0.5 sampai 0.79, lalu pasang buy limit atau sell limit.", "fungsi": "Membaca struktur H1 (BOS dan CHoCH), mencari order block dari leg terakhir, menghitung zona Fibonacci 0.5 sampai 0.79, lalu memasang buy limit atau sell limit di tengah irisan order block dan zona Fib. SL ditaruh di luar order block dan TP di high atau low leg.", "kegunaan": "Buat yang mau entry di zona discount atau premium tanpa harus jaga layar, dan mau menguji aturan SMC secara obyektif di Strategy Tester.", "fitur": ["Entry berupa pending limit, bukan market order", "Lot dihitung otomatis dari persen risiko dan jarak SL", "SL di luar order block ditambah buffer ATR M15, minimal 1x ATR", "TP di high atau low leg, entry hanya jika RR minimal sesuai input", "Order block dianggap batal kalau sudah ada candle H1 yang ditutup menembusnya", "Pending kadaluarsa otomatis setelah beberapa jam", "Filter spread dan satu setup dalam satu waktu", "Dicek sekali per candle M15"], "kelebihan": ["Aturan jelas, jadi bisa di-backtest dan dibandingkan", "Entry di zona yang sudah direncanakan, bukan kejar harga", "Risiko per trade terukur, tanpa martingale", "Cocok dipasangkan dengan Trade Manager dan Risk Guard"], "kekurangan": ["Versi sederhana: order block H1 saja, tanpa FVG, IDM, dan penyempurnaan M15, jadi hasilnya bisa beda dari web", "SMC itu subjektif, aturan kaku bisa meleset dari penilaian mata", "Tidak ada filter news, matikan EA sebelum news besar", "Entry jarang muncul, bisa berhari-hari tanpa setup", "Kalau lot minimum broker lebih besar dari hitungan, lot minimum yang dipakai sehingga risiko bisa lebih besar", "Pending tidak dibatalkan kalau struktur berubah, hanya kadaluarsa", "Belum pernah di-backtest pada data asli"], "parameter": [["RiskPercent", "Risiko per trade dalam persen equity. Mulai dari 0.5 atau lebih kecil."], ["PivotLen", "Jumlah candle kiri dan kanan untuk menentukan swing. Makin besar, swing makin jarang."], ["FibTop dan FibBottom", "Batas zona Fibonacci, bawaan 0.5 sampai 0.79."], ["MinRR", "Minimal reward:risk. Setup di bawah ini diabaikan."], ["SLBufferATR dan MinSLATR", "Buffer SL dan jarak SL minimal, dalam kelipatan ATR M15."], ["PendingHours", "Pending dibatalkan setelah sekian jam."], ["MaxSpread", "Spread maksimal (points) saat memasang pending."], ["MagicNumber", "Penanda order milik EA ini."]], "cara": ["Pasang di chart XAUUSD, timeframe M15 cukup.", "Atur RiskPercent kecil, lalu nyalakan Algo Trading.", "Uji dulu di Strategy Tester, lalu di akun demo minimal 2 sampai 4 minggu.", "Bandingkan setup EA dengan sinyal web untuk melihat bedanya."], "peringatan": ["Kode belum dikompilasi di MetaEditor asli dan belum di-backtest pada data pasar.", "Bukan jaminan profit. Uji di akun demo sebelum uang asli."]}, {"id": "martingale", "name": "EA Martingale (dengan pengaman)", "file": "GoldDesk_Martingale.mq5", "risk": "Tinggi", "tf": "M15", "type": "Market order", "ringkas": "Buka posisi searah EMA, lot dikali pengali setelah kalah. Ada batas langkah, batas lot, dan batas rugi harian.", "fungsi": "Membuka satu posisi searah EMA 20 dan EMA 50 di M15. Kalau posisi kena SL, lot berikutnya dikali pengali. Kalau menang, lot kembali ke awal. EA berhenti sampai besok kalau kalah beruntun mencapai batas atau equity turun melewati batas harian.", "kegunaan": "Buat belajar dan melihat sendiri kenapa martingale berbahaya, dengan mengujinya di demo atau Strategy Tester. Bukan rekomendasi untuk uang asli.", "fitur": ["Lot awal dikali pengali setiap kalah beruntun", "Batas jumlah kalah beruntun (MaxSteps), lalu berhenti sampai besok", "Batas lot mutlak (MaxLot)", "Batas rugi harian dari equity awal hari", "Cek margin: margin yang dibutuhkan tidak boleh melewati separuh margin bebas", "Filter spread", "SL dan TP tetap dalam dolar"], "kelebihan": ["Winrate terlihat tinggi karena kerugian kecil sering tertutup satu kemenangan", "Sederhana dan mudah dipahami", "Pengaman bawaan membatasi kerusakan dibanding martingale tanpa batas"], "kekurangan": ["Satu rentetan kalah bisa menghapus banyak laba lama atau seluruh akun", "Lot membesar cepat. Contoh SL 5 dolar, lot awal 0.01, pengali 2: 3 kalah beruntun rugi 5+10+20 = 35 dolar. Kalau MaxSteps dinaikkan jadi 6, satu rentetan rugi 315 dolar dan lot terakhir 0.32", "Arah dari EMA tidak punya keunggulan nyata, martingale hanya mengatur ukuran lot", "Spread, slippage, dan lot maksimal broker bisa merusak hitungan", "Backtest sering terlihat bagus lalu gagal di akun asli", "Dengan TP dan SL sama besar, butuh winrate di atas 50 persen setelah biaya"], "parameter": [["BaseLot", "Lot awal."], ["Multiplier", "Pengali lot setelah kalah. Makin besar makin berbahaya."], ["MaxSteps", "Maksimal kalah beruntun sebelum berhenti hari itu."], ["MaxLot", "Batas lot mutlak."], ["SLDollars dan TPDollars", "Jarak SL dan TP dalam dolar."], ["MaxDailyLossPct", "Berhenti sampai besok kalau equity turun segini persen."], ["FastEMA dan SlowEMA", "Periode EMA arah di M15."], ["MaxSpread", "Spread maksimal (points)."]], "cara": ["Hanya pakai di akun demo atau Strategy Tester.", "Mulai dengan BaseLot terkecil dan MaxSteps 2 atau 3.", "Hitung dulu kerugian terburuk satu rentetan sebelum menyalakan.", "Pantau drawdown maksimal, bukan hanya profit."], "peringatan": ["BERISIKO TINGGI. Martingale bisa menghabiskan akun dalam satu rentetan kalah.", "Jangan dipakai di akun asli sebelum paham hitungan kerugian terburuknya.", "Kode belum dikompilasi di MetaEditor asli dan belum di-backtest."]}, {"id": "emarsi", "name": "EA EMA + RSI (ikut tren)", "file": "GoldDesk_EMA_RSI.mq5", "risk": "Sedang", "tf": "Timeframe chart", "type": "Market order", "ringkas": "Ikut tren dari persilangan EMA dengan filter RSI. SL berbasis ATR dan TP berdasarkan RR.", "fungsi": "Pada candle yang baru tertutup, EA melihat apakah EMA cepat baru memotong EMA lambat ke atas atau ke bawah. Buy hanya jika RSI di atas level filter, sell hanya jika di bawah. SL sejauh ATR dikali pengali dan TP sebesar SL dikali RR.", "kegunaan": "EA dasar buat belajar cara kerja EA trend following, dan sebagai pembanding sederhana buat strategi lain.", "fitur": ["Sinyal dari persilangan EMA pada candle tertutup", "Filter RSI supaya tidak melawan momentum", "SL dan TP berbasis ATR dan RR", "Lot dari persen risiko", "Satu posisi dalam satu waktu", "Filter spread"], "kelebihan": ["Sederhana, mudah dipahami dan dimodifikasi", "Risiko per trade terukur", "Bagus untuk belajar struktur EA"], "kekurangan": ["Sering whipsaw saat pasar sideways", "Sinyal datang terlambat karena EMA mengikuti harga", "Tidak ada filter news atau sesi", "Persilangan jarang terjadi di timeframe besar", "SL berbasis ATR bisa kena spike singkat"], "parameter": [["RiskPercent", "Risiko per trade dalam persen equity."], ["FastEMA dan SlowEMA", "Periode EMA cepat dan lambat."], ["RSIPeriod dan RSILevel", "Periode RSI dan batas filter arah."], ["ATRPeriod dan SLATR", "Periode ATR dan pengali jarak SL."], ["RR", "Reward:risk untuk TP."], ["MaxSpread", "Spread maksimal (points)."]], "cara": ["Pasang di chart XAUUSD dengan timeframe yang mau diuji, misalnya M15 atau H1.", "Uji beberapa kombinasi EMA di Strategy Tester.", "Jalankan di demo dulu dan catat hasilnya."], "peringatan": ["Kode belum dikompilasi di MetaEditor asli dan belum di-backtest.", "Bukan jaminan profit."]}, {"id": "asia", "name": "EA Breakout Sesi Asia", "file": "GoldDesk_AsiaBreakout.mq5", "risk": "Sedang", "tf": "M15", "type": "Pending stop (OCO)", "ringkas": "Pasang BuyStop di atas range pagi dan SellStop di bawahnya. Satu terisi, yang lain dihapus.", "fungsi": "Mengukur high dan low dari candle M15 pada jam range yang ditentukan (waktu server), lalu setelah range selesai memasang BuyStop sedikit di atas dan SellStop sedikit di bawah range. Saat salah satu terisi, pending lawan dihapus. Di jam akhir sesi semua pending dan posisi dibersihkan.", "kegunaan": "Buat strategi breakout sesi, terutama saat harga keluar dari range sempit menjelang sesi London atau New York.", "fitur": ["Range dihitung otomatis dari candle M15 hari ini", "BuyStop dan SellStop dengan OCO", "Satu setup per hari", "Lewati hari kalau range terlalu lebar atau harga sudah keluar range", "Pembersihan otomatis di akhir sesi", "Lot dari persen risiko dan jarak SL"], "kelebihan": ["Aturan sederhana dan jelas", "Tidak butuh prediksi arah", "Cocok untuk emas yang sering bergerak kuat saat sesi dibuka"], "kekurangan": ["Jam memakai waktu server broker, dan zona waktu server tiap broker bisa berbeda, jadi cek dulu", "False breakout cukup sering terjadi", "Slippage dan spread melebar saat breakout bisa merusak entry", "SL di sisi lawan range bisa lebar, jadi lot jadi kecil", "Kalau EA di-restart di tengah hari, pending bisa dipasang lagi", "Tidak ada filter news"], "parameter": [["RangeStartHour dan RangeEndHour", "Jam awal dan akhir range, waktu server."], ["TradeEndHour", "Jam pembersihan pending dan posisi, waktu server."], ["BufferDollars", "Jarak pending dari tepi range."], ["MaxRangeDollars", "Range lebih lebar dari ini dilewati."], ["RR", "Reward:risk untuk TP."], ["RiskPercent", "Risiko per trade."], ["MaxSpread", "Spread maksimal (points)."]], "cara": ["Cek jam server di Market Watch, lalu sesuaikan input jam.", "Pasang di chart XAUUSD M15.", "Uji di Strategy Tester dengan beberapa pengaturan jam, lalu demo."], "peringatan": ["Pastikan input jam sesuai waktu server broker lu, bukan waktu lokal.", "Kode belum dikompilasi di MetaEditor asli dan belum di-backtest."]}, {"id": "manager", "name": "Trade Manager (BE, partial, trailing)", "file": "GoldDesk_TradeManager.mq5", "risk": "Rendah", "tf": "Semua", "type": "Pengelola posisi", "ringkas": "Tidak membuka posisi. Mengelola posisi yang sudah ada: breakeven, partial close, dan trailing stop.", "fungsi": "Memantau posisi terbuka di simbol chart, lalu menggeser SL ke breakeven setelah profit tertentu, menutup sebagian volume sekali, dan menjalankan trailing stop. Bisa mengelola semua posisi atau hanya satu magic number.", "kegunaan": "Cocok kalau lu entry manual dari sinyal web, lalu mau posisi diamankan otomatis tanpa dijaga terus.", "fitur": ["Breakeven dengan offset kecil", "Partial close sekali per posisi", "Trailing stop dengan jarak dan langkah", "Bisa mengelola posisi manual (magic 0) atau semua magic", "Menghormati jarak minimal stop level broker"], "kelebihan": ["Aman karena tidak membuka posisi baru", "Mengurangi emosi dan lupa geser SL", "Cocok dipasangkan dengan entry manual atau EA lain"], "kekurangan": ["Status partial close hanya di memori, jadi hilang kalau EA di-restart atau MT5 ditutup", "Jarak memakai nilai dolar tetap, bukan ATR, jadi perlu disesuaikan kondisi pasar", "Trailing yang terlalu ketat memotong profit", "Tidak menolong entry yang buruk", "Perilaku bisa beda di akun netting dan hedging"], "parameter": [["ManageAllMagic dan OnlyMagic", "Kelola semua posisi atau hanya satu magic number."], ["BEStartDollars dan BEOffsetDollars", "Kapan SL digeser ke breakeven dan berapa offsetnya."], ["PartialAtDollars dan PartialPercent", "Kapan menutup sebagian dan berapa persen volumenya."], ["TrailStartDollars, TrailDistDollars, TrailStepDollars", "Kapan trailing mulai, jaraknya, dan langkah minimal pergeserannya."]], "cara": ["Pasang di chart XAUUSD, nyalakan Algo Trading.", "Entry manual seperti biasa di MT5.", "Atur jarak dolar sesuai gaya trading, lalu uji di demo."], "peringatan": ["Cek semua nilai dolar sebelum dipakai, karena bawaan hanya contoh.", "Kode belum dikompilasi di MetaEditor asli dan belum diuji."]}, {"id": "guard", "name": "Risk Guard (penjaga rugi harian)", "file": "GoldDesk_RiskGuard.mq5", "risk": "Rendah", "tf": "Semua", "type": "Pengaman akun", "ringkas": "Kalau rugi harian mencapai batas, semuanya ditutup dan akun dikunci sampai besok.", "fungsi": "Menghitung rugi hari ini dari equity awal hari. Kalau melewati batas, semua posisi ditutup dan pending dihapus, lalu EA terus menutup posisi atau pending baru sampai hari berikutnya. Juga membatasi jumlah posisi terbuka dengan menutup yang paling baru.", "kegunaan": "Pengaman disiplin buat yang takut revenge trading atau lupa batas rugi harian.", "fitur": ["Batas rugi harian dalam persen", "Kunci sampai hari berikutnya", "Batas jumlah posisi terbuka", "Opsi hanya menjaga simbol di chart", "Panel status di chart"], "kelebihan": ["Memaksa disiplin saat emosi", "Melindungi dari hari yang sangat buruk", "Tidak membuka posisi apa pun, jadi tidak menambah risiko"], "kekurangan": ["Menutup posisi yang sedang rugi, jadi kerugian benar-benar terealisasi", "Baseline equity salah kalau EA dinyalakan setelah hari itu sudah rugi", "Hari dihitung memakai waktu server broker", "Tidak mencegah order manual, hanya menutupnya dengan cepat, jadi spread dan slippage tetap terbayar", "Bukan pengganti SL"], "parameter": [["MaxDailyLossPct", "Batas rugi harian dalam persen equity awal hari."], ["MaxOpenPositions", "Batas posisi terbuka, 0 berarti tidak dibatasi."], ["OnlyThisSymbol", "Jaga hanya simbol chart ini atau semua simbol."]], "cara": ["Pasang di satu chart mana saja dan nyalakan Algo Trading.", "Nyalakan di awal hari supaya baseline equity benar.", "Biarkan menyala selama MT5 terbuka."], "peringatan": ["Uji di demo dulu supaya paham perilaku penguncian.", "Kode belum dikompilasi di MetaEditor asli dan belum diuji."]}];
 var EAG={"note": "Sintaks kode sudah dicek dengan alat bantu dan EA SMC sudah dijalankan di ribuan data acak tanpa crash, tapi belum ada yang dikompilasi di MetaEditor asli. Kalau muncul error saat Compile (F7), kirim pesan errornya ke Claude biar diperbaiki. Semua EA wajib diuji di akun demo dulu.", "install": ["Unduh file .mq5 dari halaman EA, atau salin kodenya.", "Di MT5 desktop: File, Open Data Folder, MQL5, Experts, lalu taruh file .mq5 di sana. Atau buka MetaEditor (F4), File, New, Expert Advisor, lalu tempel kode.", "Di MetaEditor tekan Compile (F7) dan pastikan tidak ada error.", "Di MT5, panel Navigator, Expert Advisors, klik kanan Refresh, lalu seret EA ke chart XAUUSD.", "Di jendela EA, tab Common centang Allow Algo Trading, tab Inputs atur parameter. Nyalakan tombol Algo Trading di toolbar.", "Cek nama simbol di Market Watch karena broker bisa memakai akhiran huruf. Pasang EA di chart simbol yang sama dengan yang lu trade.", "Aplikasi MT5 di HP tidak menjalankan EA. Pakai laptop atau VPS yang menyala terus."], "test": ["Buka Strategy Tester (Ctrl+R), pilih EA, simbol XAUUSD, dan periode minimal 3 sampai 6 bulan.", "Pilih model Every tick based on real ticks kalau tersedia, dan deposit yang sama dengan akun lu.", "Lihat drawdown maksimal, profit factor, dan jumlah trade, bukan hanya total profit.", "Lanjut ke akun demo minimal 2 sampai 4 minggu dan bandingkan dengan hasil tester.", "Baru kalau konsisten, pertimbangkan akun asli dengan modal kecil dan lot minimum."], "check": ["Paham hitungan kerugian terburuk per trade dan per hari", "Risiko per trade 1 persen atau kurang", "Sudah cek jam server dan nama simbol broker", "Sudah uji di Strategy Tester dan demo", "Ada rencana kalau EA error atau koneksi putus", "Tahu cara mematikan EA dan menutup posisi manual"], "gloss": [["Magic number", "Nomor penanda order milik satu EA, supaya tidak tercampur dengan order lain."], ["Pending order", "Order yang menunggu harga: limit (menunggu harga balik) atau stop (menunggu harga tembus)."], ["Slippage", "Selisih antara harga yang diminta dan harga eksekusi, sering besar saat news."], ["Spread", "Selisih harga beli dan jual, biaya yang langsung dibayar tiap order."], ["Drawdown", "Penurunan equity dari puncak ke titik terendah."], ["Profit factor", "Total profit dibagi total rugi. Di atas 1 berarti untung, makin tinggi makin baik."], ["Breakeven", "SL digeser ke harga entry supaya tidak rugi kalau harga berbalik."], ["Partial close", "Menutup sebagian volume posisi."], ["Trailing stop", "SL yang mengikuti harga saat bergerak menguntungkan."], ["Hedging dan netting", "Akun hedging boleh punya beberapa posisi berlawanan di satu simbol, akun netting menggabungkannya jadi satu posisi."], ["ATR", "Ukuran rata-rata rentang pergerakan harga, dipakai untuk jarak SL yang menyesuaikan volatilitas."]]};
 var S={tf:'15m',raw:[],rawH:[],smc:null,offset:0,src:'',feedOk:false,spot:null,events:[],evSrc:'',
-  active:null,analysis:null,analysisAt:0,history:[],manual:[],actuals:{},selDay:null,page:'home',eaSel:null,eaTab:'info',deferred:null,evLoaded:false,evErr:'',show:{fib:true,zone:true,struct:true},cv:'own',auto:false,lastAuto:0,inspT:null,cross:null,crossAt:0,lastOk:0,ac:null,cm:null,feedEv:[],openEv:null,
+  active:null,analysis:null,analysisAt:0,history:[],manual:[],actuals:{},selDay:null,lastPx:null,page:'home',eaSel:null,eaTab:'info',deferred:null,evLoaded:false,evErr:'',show:{fib:true,zone:true,struct:true},cv:'own',auto:false,lastAuto:0,inspT:null,cross:null,crossAt:0,lastOk:0,ac:null,cm:null,feedEv:[],openEv:null,
   minScore:7,busy:false,calBusy:false};
 
 /* ---------- penyimpanan (localStorage Chrome) ---------- */
@@ -1660,6 +1723,11 @@ function renderHero(){
   }
   $('#chg').innerHTML=chg;
   var bp=$('#barPx'),bc=$('#barChg');if(bp)bp.textContent=p==null?'-':f2(p);if(bc)bc.innerHTML=chg.replace(' 24 jam','');
+  if(p!=null&&S.lastPx!=null&&p!==S.lastPx){
+    var fd=p>S.lastPx?'up':'dn';
+    [$('#px'),bp].forEach(function(n){if(n&&n.setAttribute){n.removeAttribute('data-flash');void n.offsetWidth;n.setAttribute('data-flash',fd);}});
+  }
+  S.lastPx=p;
   $('#feed').innerHTML='Feed: <b>'+esc(S.src||'memuat')+'</b>';
   $('#offLbl').textContent=S.offset?'selisih '+(S.offset>0?'+':'')+f2(S.offset)+' dari feed':'';
   var b=$('#banner'),msg='';
@@ -1938,6 +2006,7 @@ function showPage(p){
     if(b.getAttribute('data-p')===p)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
   });
   var bt=$('#barTitle');if(bt)bt.textContent=PAGE_T[p];
+  var bd=document.body;if(bd&&bd.setAttribute)bd.setAttribute('data-page',p);
   save();
   try{window.scrollTo({top:0});}catch(e){}
   if(p==='home'){renderToggles();drawChart();}
@@ -1967,7 +2036,7 @@ function renderEA(){
   if(!S.eaSel){
     h+='<div class="card"><p style="margin-top:0">Kumpulan EA (Expert Advisor) buat MT5. Ketuk satu EA untuk melihat penjelasan dan kodenya.</p><p class="muted" style="font-size:13px;margin-bottom:0">'+esc(EAG.note)+'</p></div>';
     h+='<div class="list" style="margin-top:12px">'+EAS.map(function(e){
-      return '<button class="ev eacard" data-act="eaOpen" data-id="'+esc(e.id)+'"><span><b>'+esc(e.name)+'</b><small>'+esc(e.ringkas)+'</small><span class="chips"><span class="chip">'+esc(e.type)+'</span><span class="chip">'+esc(e.tf)+'</span></span></span><span class="rk rk-'+esc(e.risk)+'">'+esc(e.risk)+'</span></button>';
+      return '<button class="ev eacard eac-'+esc(e.risk)+'" data-act="eaOpen" data-id="'+esc(e.id)+'"><span><b>'+esc(e.name)+'</b><small>'+esc(e.ringkas)+'</small><span class="chips"><span class="chip">'+esc(e.type)+'</span><span class="chip">'+esc(e.tf)+'</span></span></span><span class="rk rk-'+esc(e.risk)+'">'+esc(e.risk)+'</span></button>';
     }).join('')+'</div>';
     h+='<div class="card" style="margin-top:12px"><details><summary>Cara pasang EA di MT5</summary>'+liList(EAG.install,'')+'</details></div>';
     h+='<div class="card"><details><summary>Cara uji sebelum akun asli</summary><ol class="bullets">'+EAG.test.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ol></details></div>';
