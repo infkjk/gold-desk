@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Initial Jobless Claims",
+    "date": "2026-10-22T19:30:00+07:00",
+    "forecast": "200K",
+    "previous": "199K",
+    "sumber": "jadwal 8:30 ET; konsensus dari ringkasan berita"
+  },
+  {
+    "title": "S&P Global Flash Composite PMI",
+    "date": "2026-10-23T20:45:00+07:00",
+    "forecast": "57.6",
+    "previous": "58.4",
+    "sumber": "jadwal 9:45 ET; konsensus dari ringkasan berita"
+  },
+  {
+    "title": "Federal Funds Rate (keputusan FOMC)",
+    "date": "2026-10-29T01:00:00+07:00",
+    "forecast": "",
+    "previous": "",
+    "sumber": "28 Okt 2:00 PM ET; isi forecast dan previous sendiri"
+  }
+]
