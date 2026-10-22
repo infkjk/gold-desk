@@ -221,6 +221,85 @@ button:active{transform:scale(.97)}
 .panel{animation:sheetUp .32s cubic-bezier(.2,.8,.2,1)}
 .toast:not([hidden]){animation:toastIn .3s}
 .bar i{transition:left .6s ease}
+/* ===== Fase 1: tema, desain baku, splash, ringkasan, mode news, kunci ===== */
+:root{--r-sm:10px;--r-md:14px;--r-lg:20px;--shadow:0 8px 24px rgba(0,0,0,.28)}
+html[data-theme="midnight"]{--bg:#0d1220;--surface:#141b2e;--raised:#1c2640;--line:#2a3658;--text:#e9eefb;--muted:#92a0c0;--gold:#7fb2ff;--accent:#7fb2ff;--accent-rgb:127,178,255}
+html[data-theme="emerald"]{--bg:#0c1511;--surface:#13201a;--raised:#1a2c24;--line:#284236;--text:#e6f2ec;--muted:#8da898;--gold:#4fd6a0;--accent:#4fd6a0;--accent-rgb:79,214,160}
+html[data-theme="midnight"] .hero{background:radial-gradient(120% 140% at 0% 0%,rgba(var(--accent-rgb),.2),transparent 62%),linear-gradient(180deg,var(--surface),#0f1626)}
+html[data-theme="emerald"] .hero{background:radial-gradient(120% 140% at 0% 0%,rgba(var(--accent-rgb),.2),transparent 62%),linear-gradient(180deg,var(--surface),#0f1a15)}
+html[data-theme="midnight"] button.primary,html[data-theme="emerald"] button.primary{color:#07110d}
+.topbar{background:var(--bg);background:color-mix(in srgb,var(--bg) 90%,transparent)}
+.nav{background:var(--surface);background:color-mix(in srgb,var(--surface) 92%,transparent)}
+html[data-fs="s"] main{zoom:.93}
+html[data-fs="l"] main{zoom:1.12}
+.toast{z-index:120}
+.ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:7px;flex:none}
+.card h2.hasic::before{display:none}
+.card h2.hasic .ic{color:var(--accent);width:20px;height:20px}
+button .ic{margin-right:6px}
+.skel{border-radius:7px;background:linear-gradient(90deg,var(--raised) 25%,var(--line) 50%,var(--raised) 75%);background-size:200% 100%;animation:shim 1.3s linear infinite}
+@keyframes shim{from{background-position:200% 0}to{background-position:-200% 0}}
+.sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(min-width:560px){.sum{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.tile{min-width:0;border:1px solid rgba(var(--accent-rgb),.22);border-radius:var(--r-md);padding:12px;background:linear-gradient(160deg,rgba(var(--accent-rgb),.10),transparent 70%),var(--surface);box-shadow:var(--shadow)}
+.tile .tl{font-size:12px;color:var(--muted);display:flex;align-items:center}
+.tile .tl .ic{width:15px;height:15px;margin-right:6px;color:var(--accent)}
+.tile .tv{font-family:var(--serif);font-size:20px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.tile .ts{font-size:12px;color:var(--muted);margin-top:2px}
+.splash{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:var(--bg);transition:opacity .55s ease,visibility 0s .55s}
+.splash.hide{opacity:0;visibility:hidden}
+.sp-in{text-align:center}
+.sp-logo{width:112px;height:112px}
+.sp-ring{fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round;stroke-dasharray:290;stroke-dashoffset:290;animation:spDraw 1s ease forwards;transform-origin:center}
+.sp-au{font-family:var(--serif);font-size:38px;font-weight:700;fill:var(--accent);opacity:0;animation:fadeIn .6s .55s forwards}
+.sp-t{font-family:var(--serif);font-size:26px;margin-top:10px;opacity:0;animation:fadeIn .6s .7s forwards}
+.sp-s{font-size:13px;color:var(--muted);letter-spacing:.14em;opacity:0;animation:fadeIn .6s .85s forwards}
+@keyframes spDraw{to{stroke-dashoffset:0}}
+.lock{position:fixed;inset:0;z-index:150;background:var(--bg);display:grid;place-items:center;padding:20px;overflow:auto}
+.lock[hidden],.nm[hidden]{display:none}
+.lock-in{width:min(340px,100%);text-align:center}
+.lock-logo{display:inline-grid;place-items:center;width:56px;height:56px;border-radius:50%;border:1px solid rgba(var(--accent-rgb),.4);color:var(--accent);margin-bottom:8px}
+.lock-logo .ic{width:26px;height:26px;margin:0}
+.dots{display:flex;justify-content:center;gap:12px;margin:14px 0 6px}
+.dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--accent);transition:background .15s}
+.dots i.on{background:var(--accent)}
+.dots.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.lock-msg{min-height:20px;color:var(--sell);font-size:14px;margin:4px 0 8px}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 14px}
+.keys button{min-height:58px;font-size:22px;font-family:var(--serif);border-radius:16px}
+.keys button.ghost{font-size:14px;font-family:inherit}
+.nm{position:fixed;inset:0;z-index:60;background:radial-gradient(120% 80% at 50% 0%,rgba(229,112,90,.18),transparent 60%),var(--bg);overflow:auto;padding:16px}
+.nm-in{max-width:520px;margin:0 auto;padding-bottom:40px}
+.nm-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.nm-t{font-size:26px;margin:6px 0}
+.nm-cd{font-family:var(--serif);font-size:clamp(56px,20vw,96px);line-height:1;font-variant-numeric:tabular-nums;margin:10px 0}
+.nm-cd.urgent{color:var(--sell)}
+.chk{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.chk:first-of-type{border-top:0}
+.chk input{width:22px;height:22px;min-height:0;accent-color:var(--accent);flex:none;padding:0}
+.swt{min-height:36px;padding:4px 14px}
+.swt[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:rgba(var(--accent-rgb),.12)}
+.pinrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.pinrow input{width:140px}
+@media(min-width:900px){
+  .nav{left:0;top:0;bottom:0;right:auto;width:224px;height:auto;transform:none;flex-direction:column;justify-content:flex-start;align-items:stretch;border-radius:0;border:0;border-right:1px solid var(--line);padding:84px 12px 16px;gap:6px;box-shadow:none;overflow:auto}
+  .nav::before{content:"Gold Desk";position:absolute;top:26px;left:24px;font-family:var(--serif);font-size:24px;color:var(--accent)}
+  .nav button{flex-direction:row;justify-content:flex-start;gap:12px;min-height:48px;padding:0 14px;font-size:14px}
+  main{margin-left:236px;max-width:1120px;padding:24px 32px 40px}
+  .topbar{margin:-24px -32px 18px;padding-left:32px;padding-right:32px}
+  .page{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+  .page>*{min-width:0}
+  .page>.pg-h,#pg-home>.top,#pg-home>.banner,#pg-home>.hero,#pg-home>#summary,#pg-home>section.card:not([id]),#pg-signal>#histCard,#pg-news>#newsCard,#pg-ea>#eaRoot,#pg-tools>#setCard{grid-column:1/-1}
+}
+
+
+.page>*{min-width:0}
+#setCard .kv{align-items:center}
+#setCard .kv span{flex:1 1 0;min-width:0}
+#setCard .swt{flex:none}
+.pinrow input{width:auto;flex:1 1 120px;min-width:0;max-width:200px}
+.pinrow button{flex:none}
 </style>
 </head>
 <body>
@@ -247,6 +326,8 @@ button:active{transform:scale(.97)}
       <div class="tfs"><span class="muted" style="font-size:13px">Struktur dibaca di H1, entry dicari di M15</span><button class="ghost" data-act="refresh" style="margin-left:auto">Perbarui</button></div>
     </section>
 
+    <section id="summary" class="sum"></section>
+
     <section class="card">
       <div class="card-h"><h2>Chart M15</h2>
         <a class="link" href="https://www.tradingview.com/chart/?symbol=OANDA:XAUUSD" target="_blank" rel="noopener">Buka di TradingView</a></div>
@@ -258,6 +339,7 @@ button:active{transform:scale(.97)}
     </section>
 
     <section class="card" id="homeSig"></section>
+    <section class="card" id="briefCard"></section>
     <section class="card" id="todayCard"></section>
   </section>
 
@@ -299,6 +381,7 @@ button:active{transform:scale(.97)}
 
   <section class="page" id="pg-tools" hidden>
     <h1 class="pg-h">Alat</h1>
+    <section class="card" id="setCard"></section>
     <section class="card" id="toolsCard">
       <h2>Kalkulator lot</h2>
       <div class="field" style="margin-top:10px">
@@ -341,6 +424,10 @@ button:active{transform:scale(.97)}
   <button data-act="page" data-p="ea"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 8V4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg><span>EA</span></button>
   <button data-act="page" data-p="tools"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>Alat</span></button>
 </nav>
+<div id="splash" class="splash" aria-hidden="true"><div class="sp-in"><svg class="sp-logo" viewBox="0 0 120 120"><circle class="sp-ring" cx="60" cy="60" r="46"/><text class="sp-au" x="60" y="73" text-anchor="middle">Au</text></svg><div class="sp-t">Gold Desk</div><div class="sp-s">SMC XAUUSD</div></div></div>
+<div id="lock" class="lock" role="dialog" aria-modal="true" aria-label="Kunci" hidden><div class="lock-in" id="lockBody"></div></div>
+<div id="nm" class="nm" role="dialog" aria-modal="true" aria-label="Mode News" hidden><div class="nm-in" id="nmBody"></div></div>
+<input type="file" id="bkFile" accept=".json,application/json" hidden>
 <div id="toast" class="toast" role="status" hidden></div>
 
 <div id="sheet" class="sheet" hidden>
@@ -2124,6 +2211,358 @@ document.addEventListener('change',function(e){if(e.target.id==='minScore'){S.mi
 $('#sheet').addEventListener('click',function(e){if(e.target.id==='sheet'){S.openEv=null;renderSheet();}});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&S.openEv){S.openEv=null;renderSheet();}});
 window.addEventListener('resize',drawChart);
+
+/* ================= FASE 1: tema, ikon, ringkasan, briefing, mode news, kunci PIN, backup file ================= */
+var PREF_KEY='golddesk:prefs:v1',PIN_KEY='golddesk:pin:v1';
+var P={theme:'gold',fs:'m',haptic:true,sound:true,newsMode:true,checks:{},dismissed:{}};
+var LK={locked:false,buf:'',tries:0,until:0,hiddenAt:0};
+function pLoad(){try{var d=JSON.parse(localStorage.getItem(PREF_KEY)||'null');if(d&&typeof d==='object'){for(var k in d)P[k]=d[k];}}catch(e){}}
+function pSave(){try{localStorage.setItem(PREF_KEY,JSON.stringify(P));}catch(e){}}
+var THEME_BG={gold:'#1a1712',midnight:'#0d1220',emerald:'#0c1511'};
+function applyPrefs(){
+  var h=document.documentElement;
+  if(h&&h.setAttribute){h.setAttribute('data-theme',P.theme);h.setAttribute('data-fs',P.fs);}
+  try{var m=document.querySelector('meta[name="theme-color"]');if(m&&m.setAttribute)m.setAttribute('content',THEME_BG[P.theme]||'#1a1712');}catch(e){}
+}
+
+/* ---- ikon seragam ---- */
+var ICONS={
+ chart:'<path d="M4 18l5-6 4 3 7-9"/><path d="M4 21h16"/>',
+ bolt:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
+ news:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+ sliders:'<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',
+ refresh:'<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>',
+ copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+ download:'<path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/>',
+ shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',
+ bell:'<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+ calendar:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+ clock:'<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
+ target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',
+ spark:'<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',
+ calc:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M8 16h2M12 16h2"/>',
+ lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+ pulse:'<path d="M3 12h4l2-6 4 12 2-6h6"/>',
+ wallet:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h5M3 10h14"/>'
+};
+function ic(n){return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
+var H2MAP=[['Chart','chart'],['Sinyal','bolt'],['News hari ini','calendar'],['News','news'],['History','clock'],['Ringkasan','target'],['Kalkulator','calc'],['Sesi','clock'],['Pasang','download'],['Pengaturan','sliders'],['Alert','shield'],['Briefing','spark']];
+var BTNMAP={refresh:'refresh',analyze:'bolt',eaCopy:'copy',eaDl:'download',bkCopy:'copy',install:'download',testAlert:'bell',bkDl:'download',briefCopy:'copy',pinLock:'lock',nmCopy:'copy'};
+function decorate(){
+  try{
+    Array.prototype.forEach.call(document.querySelectorAll('.card h2,.card-h h2'),function(h){
+      if(h.getAttribute('data-ic'))return;
+      var t=h.textContent||'';
+      for(var i=0;i<H2MAP.length;i++){if(t.indexOf(H2MAP[i][0])===0){h.insertAdjacentHTML('afterbegin',ic(H2MAP[i][1]));h.setAttribute('data-ic','1');h.classList.add('hasic');break;}}
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('button[data-act]'),function(b){
+      if(b.getAttribute('data-ic'))return;
+      var n=BTNMAP[b.getAttribute('data-act')];
+      if(n){b.insertAdjacentHTML('afterbegin',ic(n));b.setAttribute('data-ic','1');}
+    });
+  }catch(e){}
+}
+
+/* ---- haptik dan bunyi lembut ---- */
+function vib(p){if(!P.haptic)return;try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
+function tone(f,d,v,delay){
+  try{
+    if(!S.ac)return;
+    var o=S.ac.createOscillator(),g=S.ac.createGain(),t=S.ac.currentTime+(delay||0);
+    o.type='sine';o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(v||0.08,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g);g.connect(S.ac.destination);o.start(t);o.stop(t+d+0.02);
+  }catch(e){}
+}
+function chime(k){
+  if(!P.sound)return;
+  unlockAudio();
+  if(k==='ok'){tone(660,.14,.07);tone(880,.2,.07,.1);}
+  else if(k==='alert'){tone(880,.16,.09);tone(660,.2,.09,.16);tone(880,.22,.09,.34);}
+  else if(k==='err'){tone(220,.25,.08);}
+  else if(k==='soft'){tone(520,.12,.05);}
+}
+beep=function(){chime('alert');};
+alertUser=function(msg){
+  showToast(msg);chime('alert');vib([180,80,180]);
+  try{document.title='(!) '+msg;clearTimeout(S.titleT);S.titleT=setTimeout(function(){document.title='Gold Desk SMC - XAUUSD';},15000);}catch(e){}
+};
+
+/* ---- ringkasan beranda ---- */
+function skel(n){var h='';for(var i=0;i<n;i++)h+='<div class="skel" style="height:14px;margin:12px 0;width:'+(55+((i*19)%40))+'%"></div>';return h;}
+function fmtCd(ms){var s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h>0?h+'j '+m+'m':m+'m '+(s%60)+'d';}
+var SESS=[['Sydney','Australia/Sydney',8,17],['Tokyo','Asia/Tokyo',9,18],['London','Europe/London',8,17],['New York','America/New_York',8,17]];
+function wibHour(tz,h){return (((h*60-tzOffset(tz)+420)/60)%24+24)%24;}
+function fh(x){return String(Math.floor(x)).padStart(2,'0')+':'+String(Math.round((x%1)*60)).padStart(2,'0');}
+function activeSess(){
+  if(marketClosed())return [];
+  var out=[];
+  SESS.forEach(function(s){var lh=((Date.now()/36e5+tzOffset(s[1])/60)%24+24)%24;if(lh>=s[2]&&lh<s[3])out.push(s[0]);});
+  return out;
+}
+function tile(icn,label,val,sub,cls){return '<div class="tile"><div class="tl">'+ic(icn)+esc(label)+'</div><div class="tv'+(cls?' '+cls:'')+'">'+val+'</div><div class="ts">'+sub+'</div></div>';}
+function renderSummary(){
+  var el=$('#summary');if(!el)return;
+  if(!S.src){var sk='';for(var i=0;i<6;i++)sk+='<div class="tile"><div class="skel" style="height:12px;width:50%"></div><div class="skel" style="height:22px;width:75%;margin-top:10px"></div></div>';el.innerHTML=sk;return;}
+  var o=S.smc,now=Date.now(),h='';
+  h+=(o&&o.bias)?tile('target','Bias H1',o.bias===1?'Bullish':'Bearish',esc(o.E.type)+' di '+f2(o.E.level),o.bias===1?'up':'dn'):tile('target','Bias H1','-','belum jelas');
+  if(S.active)h+=tile('bolt','Sinyal',esc(S.active.dir)+(S.active.status==='pending'?' pending':' aktif'),'Entry '+f2(S.active.entry),S.active.dir==='BUY'?'up':'dn');
+  else h+=tile('bolt','Sinyal','Menunggu','analisa terakhir: '+(S.analysis?esc(S.analysis.dir):'-'));
+  var nx=S.events.filter(function(e){return e.time>now;})[0];
+  if(!S.evLoaded)h+=tile('calendar','News berikutnya','...','memuat kalender');
+  else if(nx)h+=tile('calendar','News berikutnya',esc(shortTitle(nx.title)),hm(nx.time)+' WIB, dalam '+fmtCd(nx.time-now));
+  else h+=tile('calendar','News berikutnya','Tidak ada','jadwal kosong');
+  var as=activeSess();
+  h+=tile('clock','Sesi aktif',as.length?esc(as.join(', ')):(marketClosed()?'Pasar tutup':'Di luar sesi'),'overlap '+fh(wibHour('America/New_York',8))+' sampai '+fh(wibHour('Europe/London',17))+' WIB');
+  var tk=dayKey(now),td=S.history.filter(function(x){return dayKey(x.t1)===tk;}),sum=td.reduce(function(a,x){return a+x.pts;},0);
+  h+=tile('wallet','P/L hari ini',(sum>=0?'+':'')+f2(sum),td.length+' trade selesai',sum>0?'up':(sum<0?'dn':''));
+  if(o&&o.avgA1){var r=o.A1/o.avgA1;h+=tile('pulse','Volatilitas',r>1.4?'Tinggi':(r<0.7?'Rendah':'Normal'),'ATR H1 '+f2(o.A1),r>1.4?'dn':'');}
+  else h+=tile('pulse','Volatilitas','-','menunggu data');
+  el.innerHTML=h;
+}
+
+/* ---- briefing harian ---- */
+function briefRows(){
+  var o=S.smc,rows=[],now=Date.now();
+  if(!o||!o.bias)rows.push(['Bias H1',S.feedOk?'Struktur belum jelas, tunggu BOS atau CHoCH.':'Menunggu data candle.']);
+  else{
+    var buy=o.bias===1;
+    rows.push(['Bias H1',(buy?'Bullish':'Bearish')+', '+o.E.type+' di '+f2(o.E.level)]);
+    if(o.band)rows.push(['Zona Fib 0.5 sampai 0.79',f2(o.band.lo)+' sampai '+f2(o.band.hi)+' ('+(buy?'discount':'premium')+')']);
+    rows.push(['Target leg',f2(buy?o.rangeHi:o.rangeLo)]);
+    rows.push(['Zona terdekat',o.best?(o.best.label+' '+f2(o.best.lo)+' sampai '+f2(o.best.hi)+(o.passed?' (sudah terlewat)':'')):'belum ada OB atau FVG di zona Fib']);
+    rows.push(['Liquidity (IDM)',o.idmTaken?'sudah disapu':'belum disapu']);
+  }
+  var tk=dayKey(now),te=S.events.filter(function(e){return dayKey(e.time)===tk;});
+  rows.push(['News hari ini',!S.evLoaded?'memuat kalender':(te.length?te.map(function(e){return shortTitle(e.title)+' '+hm(e.time);}).join(', ')+' WIB':'tidak ada news high impact (USD)')]);
+  var as=activeSess();
+  rows.push(['Sesi',as.length?as.join(', ')+' sedang buka. Overlap London dan New York '+fh(wibHour('America/New_York',8))+' sampai '+fh(wibHour('Europe/London',17))+' WIB.':(marketClosed()?'Pasar emas tutup.':'Di luar sesi utama.')]);
+  if(o&&o.avgA1){var r=o.A1/o.avgA1;rows.push(['Volatilitas','ATR H1 '+f2(o.A1)+' vs rata-rata '+f2(o.avgA1)+(r>1.4?', tinggi: perlebar SL dan kecilkan lot.':(r<0.7?', rendah: pergerakan sempit.':', normal.'))]);}
+  return rows;
+}
+function renderBrief(){
+  var el=$('#briefCard');if(!el)return;
+  var h='<div class="card-h"><h2>Briefing hari ini</h2></div>';
+  if(!S.src){el.innerHTML=h+skel(4);return;}
+  h+=briefRows().map(function(r){return '<div class="kv"><span>'+esc(r[0])+'</span><b>'+esc(r[1])+'</b></div>';}).join('');
+  h+='<p class="muted" style="font-size:12px;margin:10px 0 0">Dihitung dari aturan SMC dan data terbaru, bukan prediksi atau saran entry.</p><div class="row"><button data-act="briefCopy">Salin briefing</button></div>';
+  el.innerHTML=h;
+}
+function briefCopy(){
+  var txt='Briefing Gold Desk, '+dayFull(dayKey(Date.now()))+'\n'+briefRows().map(function(r){return '- '+r[0]+': '+r[1];}).join('\n');
+  try{navigator.clipboard.writeText(txt).then(function(){showToast('Briefing tersalin.');chime('ok');},function(){showToast('Gagal menyalin.');});}catch(e){showToast('Gagal menyalin.');}
+}
+
+/* ---- Mode News ---- */
+var NM={id:null,released:false};
+var NM_CHECKS=['Risiko per trade sudah dihitung di kalkulator lot','SL terpasang di setiap posisi','Tidak ada posisi lain yang ikut tersapu news','Spread sudah dicek di MT5','Rencana skenario jelas, dan siap NO TRADE kalau ragu'];
+function nmEvent(){
+  var now=Date.now(),best=null;
+  S.events.forEach(function(e){var d=e.time-now;if(d>-10*60000&&d<=15*60000&&(!best||Math.abs(d)<Math.abs(best.time-now)))best=e;});
+  return best;
+}
+function nmEv(){return S.events.filter(function(e){return e.id===NM.id;})[0];}
+function renderNM(){
+  var ev=nmEv(),el=$('#nmBody');if(!ev||!el)return;
+  var now=Date.now(),rel=ev.time<=now,sg=newsSignal(ev,evCache(ev)),ck=P.checks[ev.id]||[];
+  NM.released=rel;
+  var h='<div class="nm-top"><span class="rk rk-Tinggi">News high impact</span><button class="ghost" data-act="nmClose">Tutup</button></div>';
+  h+='<h2 class="nm-t">'+esc(ev.title)+'</h2><p class="muted" style="margin:0">'+dayLbl(ev.time)+', '+hm(ev.time)+' WIB | Forecast '+esc(ev.forecast||'-')+' | Previous '+esc(ev.previous||'-')+'</p>';
+  h+='<div class="nm-cd" id="nmCd">--:--</div><p class="muted" id="nmSub" style="margin:0"></p>';
+  h+='<div class="warnbox" style="margin-top:14px"><p>Spread bisa melebar dan harga bisa loncat (slippage) saat rilis. Cek spread di MT5, dan hindari market order di detik-detik rilis.</p></div>';
+  h+='<h4>Rencana skenario</h4><p style="margin:0">'+esc(sg.plan||sg.label||sg.text)+'</p>';
+  if(rel){h+='<h4>Angka actual</h4><div class="pinrow"><input id="nmAct" value="'+esc(S.actuals[ev.id]||'')+'" placeholder="mis. 0.4%"><button data-act="nmAct">Simpan</button></div>';}
+  h+='<h4>Checklist</h4>'+NM_CHECKS.map(function(t,i){return '<label class="chk"><input type="checkbox" data-nmck="'+i+'"'+(ck[i]?' checked':'')+'><span>'+esc(t)+'</span></label>';}).join('');
+  h+='<div class="row"><button data-act="nmCopy">Salin permintaan analisa ke chat</button></div>';
+  el.innerHTML=h;
+  tickNM();
+}
+function tickNM(){
+  var ev=nmEv();if(!ev)return;
+  var now=Date.now(),d=ev.time-now,cd=$('#nmCd'),sub=$('#nmSub');
+  if((d<=0)!==NM.released){renderNM();return;}
+  if(d<-10*60000){closeNM(false);return;}
+  if(cd){
+    if(d>0){var s=Math.ceil(d/1000);cd.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');if(cd.classList)cd.classList.toggle('urgent',d<=60000);}
+    else{cd.textContent='Rilis';if(cd.classList)cd.classList.remove('urgent');}
+  }
+  if(sub)sub.textContent=d>0?'menuju rilis':Math.floor(-d/60000)+' menit sejak rilis. Isi angka actual untuk sinyal news.';
+}
+function openNM(id,auto){
+  NM.id=id;renderNM();
+  var el=$('#nm');if(el)el.hidden=false;
+  if(auto){chime('alert');vib([120,60,120]);}
+}
+function closeNM(dismiss){
+  var el=$('#nm');if(el)el.hidden=true;
+  if(dismiss&&NM.id){P.dismissed[NM.id]=1;pSave();}
+  NM.id=null;
+}
+function nmTick(){
+  if(document.hidden)return;
+  if(NM.id){tickNM();return;}
+  if(!P.newsMode||LK.locked)return;
+  var e=nmEvent(),now=Date.now();
+  if(e&&!P.dismissed[e.id]&&e.time-now>0&&e.time-now<=15*60000)openNM(e.id,true);
+}
+function nmCopy(){
+  var ev=nmEv();if(!ev)return;
+  var txt='analisa news '+ev.title+' USD jam '+hm(ev.time)+' WIB '+dayLbl(ev.time)+(ev.forecast?', forecast '+ev.forecast:'')+(ev.previous?', previous '+ev.previous:'');
+  try{navigator.clipboard.writeText(txt).then(function(){showToast('Tersalin, tempel di chat Claude.');},function(){showToast('Gagal menyalin.');});}catch(e){showToast('Gagal menyalin.');}
+}
+
+/* ---- Kunci PIN ---- */
+function hasSubtle(){return !!(window.crypto&&window.crypto.subtle);}
+async function sha(s){var b=new TextEncoder().encode(s),h=await crypto.subtle.digest('SHA-256',b);return Array.prototype.map.call(new Uint8Array(h),function(x){return ('0'+x.toString(16)).slice(-2);}).join('');}
+function pinData(){try{return JSON.parse(localStorage.getItem(PIN_KEY)||'null');}catch(e){return null;}}
+function renderLock(msg){
+  var d=pinData(),len=d?d.len:4,dots='',keys='';
+  for(var i=0;i<len;i++)dots+='<i class="'+(i<LK.buf.length?'on':'')+'"></i>';
+  ['1','2','3','4','5','6','7','8','9'].forEach(function(k){keys+='<button data-act="lk" data-k="'+k+'">'+k+'</button>';});
+  keys+='<button class="ghost" data-act="lkClear">Bersihkan</button><button data-act="lk" data-k="0">0</button><button class="ghost" data-act="lkDel">Hapus</button>';
+  var el=$('#lockBody');
+  if(el)el.innerHTML='<div class="lock-logo">'+ic('lock')+'</div><h2>Gold Desk terkunci</h2><p class="muted" style="margin:4px 0">Masukkan PIN</p><div class="dots" id="lkDots">'+dots+'</div><p class="lock-msg" id="lockMsg">'+esc(msg||'')+'</p><div class="keys">'+keys+'</div><p class="muted" style="font-size:12px">Lupa PIN? Hapus data situs ini di pengaturan Chrome. History dan pengaturan ikut hilang, jadi rutin backup.</p>';
+}
+function showLock(){var el=$('#lock');if(!el)return;LK.locked=true;LK.buf='';renderLock('');el.hidden=false;if(NM.id)closeNM(false);}
+function hideLock(){var el=$('#lock');LK.locked=false;if(el)el.hidden=true;}
+async function lkKey(k){
+  var d=pinData();if(!d)return;
+  if(Date.now()<LK.until){renderLock('Tunggu sebentar, lalu coba lagi.');return;}
+  if(LK.buf.length<d.len)LK.buf+=k;
+  renderLock('');
+  if(LK.buf.length===d.len){
+    var ok=false;try{ok=(await sha(d.salt+LK.buf))===d.hash;}catch(e){}
+    if(ok){LK.tries=0;hideLock();chime('ok');vib(20);}
+    else{
+      LK.tries++;LK.buf='';vib([60,40,60]);chime('err');
+      if(LK.tries>=5){LK.until=Date.now()+30000;LK.tries=0;renderLock('Terlalu banyak salah. Tunggu 30 detik.');}else renderLock('PIN salah.');
+      var dt=$('#lkDots');if(dt&&dt.classList)dt.classList.add('shake');
+    }
+  }
+}
+async function pinSet(){
+  var inp=$('#pinNew'),v=inp?String(inp.value).trim():'',m=$('#pinMsg');
+  if(!hasSubtle()){if(m)m.textContent='Kunci PIN butuh halaman https. Buka lewat alamat web, bukan file lokal.';return;}
+  if(!/^\d{4,6}$/.test(v)){if(m)m.textContent='PIN harus 4 sampai 6 angka.';return;}
+  var salt=Array.prototype.map.call(crypto.getRandomValues(new Uint8Array(8)),function(x){return ('0'+x.toString(16)).slice(-2);}).join('');
+  try{localStorage.setItem(PIN_KEY,JSON.stringify({salt:salt,len:v.length,hash:await sha(salt+v)}));}catch(e){if(m)m.textContent='Gagal menyimpan PIN.';return;}
+  renderSettings();var m2=$('#pinMsg');if(m2)m2.textContent='PIN aktif. Aplikasi terkunci lagi setelah ditinggal lebih dari 1 menit.';
+}
+async function pinRemove(){
+  var d=pinData(),inp=$('#pinOld'),v=inp?String(inp.value).trim():'',m=$('#pinMsg');
+  if(!d)return;
+  var ok=false;try{ok=(await sha(d.salt+v))===d.hash;}catch(e){}
+  if(!ok){if(m)m.textContent='PIN lama salah.';return;}
+  try{localStorage.removeItem(PIN_KEY);}catch(e){}
+  renderSettings();var m2=$('#pinMsg');if(m2)m2.textContent='PIN dihapus.';
+}
+
+/* ---- Pengaturan ---- */
+function renderSettings(){
+  var el=$('#setCard');if(!el)return;
+  var pin=pinData();
+  function chips(act,cur,opts){return '<div class="tfs" role="group" style="margin:0">'+opts.map(function(o){return '<button data-act="'+act+'" data-k="'+o[0]+'" aria-pressed="'+(cur===o[0]?'true':'false')+'">'+o[1]+'</button>';}).join('')+'</div>';}
+  function sw(act,on,label){return '<div class="kv"><span>'+label+'</span><button class="swt" data-act="'+act+'" aria-pressed="'+(on?'true':'false')+'">'+(on?'Aktif':'Mati')+'</button></div>';}
+  var h='<h2>Pengaturan</h2><h4>Tema</h4>'+chips('thm',P.theme,[['gold','Emas Klasik'],['midnight','Midnight'],['emerald','Emerald']]);
+  h+='<h4>Ukuran teks</h4>'+chips('fs',P.fs,[['s','Kecil'],['m','Normal'],['l','Besar']]);
+  h+='<h4>Umpan balik</h4>'+sw('prefH',P.haptic,'Getar kecil saat tombol ditekan')+sw('prefS',P.sound,'Bunyi lembut untuk sinyal dan alert')+sw('prefN',P.newsMode,'Mode News otomatis 15 menit sebelum rilis');
+  h+='<h4>Kunci PIN</h4>';
+  if(pin)h+='<p class="muted" style="margin:0 0 6px;font-size:13px">PIN aktif. Aplikasi terkunci lagi kalau ditinggal lebih dari 1 menit.</p><div class="pinrow"><button data-act="pinLock">Kunci sekarang</button><input id="pinOld" type="password" inputmode="numeric" maxlength="6" placeholder="PIN lama"><button class="ghost" data-act="pinRemove">Hapus PIN</button></div>';
+  else h+='<p class="muted" style="margin:0 0 6px;font-size:13px">Kunci ini cuma menutup tampilan di perangkat ini. Datanya tidak dienkripsi.</p><div class="pinrow"><input id="pinNew" type="password" inputmode="numeric" maxlength="6" placeholder="PIN 4 sampai 6 angka"><button data-act="pinSet">Aktifkan PIN</button></div>';
+  h+='<p id="pinMsg" class="muted" style="font-size:13px;margin:6px 0 0"></p>';
+  h+='<h4>Backup file</h4><div class="row" style="margin-top:0"><button data-act="bkDl">Unduh backup</button><button class="ghost" data-act="bkPick">Pulihkan dari file</button></div><p id="bkFileMsg" class="muted" style="font-size:13px;margin:6px 0 0"></p>';
+  el.innerHTML=h;decorate();
+}
+function bkDownload(){
+  var d={v:2,history:S.history,manual:S.manual,actuals:S.actuals,offset:S.offset,minScore:S.minScore,prefs:P},m=$('#bkFileMsg');
+  try{
+    var b=new Blob([JSON.stringify(d)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');
+    a.href=u;a.download='golddesk-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(u);},800);
+    if(m)m.textContent='Mengunduh backup. Cek folder Download.';
+  }catch(e){if(m)m.textContent='Gagal mengunduh backup.';}
+}
+function bkFromText(text){
+  var m=$('#bkFileMsg');
+  try{
+    var d=JSON.parse(text);
+    if(!d||!Array.isArray(d.history))throw new Error('x');
+    if(d.prefs&&typeof d.prefs==='object'){for(var k in d.prefs)P[k]=d.prefs[k];pSave();applyPrefs();}
+    var bi=$('#bkIn');if(bi)bi.value=text;
+    bkRestore();renderSettings();
+    var m2=$('#bkFileMsg');if(m2)m2.textContent='Backup dipulihkan dari file.';
+  }catch(e){if(m)m.textContent='File bukan backup Gold Desk yang valid.';}
+}
+
+/* ---- splash ---- */
+function hideSplash(){var s=$('#splash');if(!s)return;if(s.classList)s.classList.add('hide');setTimeout(function(){s.hidden=true;},700);}
+
+/* ---- pembungkus fungsi lama ---- */
+function wrapAfter(name,extra){
+  var f=eval(name);
+  return function(){var r=f.apply(this,arguments);try{extra();}catch(e){}return r;};
+}
+renderAll=wrapAfter('renderAll',function(){renderSummary();renderBrief();decorate();});
+showPage=wrapAfter('showPage',function(){decorate();if(S.page==='tools')renderSettings();});
+renderSignal=wrapAfter('renderSignal',decorate);
+renderNews=wrapAfter('renderNews',function(){renderSummary();renderBrief();decorate();});
+renderHistory=wrapAfter('renderHistory',decorate);
+renderHomeSig=wrapAfter('renderHomeSig',decorate);
+renderBias=wrapAfter('renderBias',decorate);
+renderEA=wrapAfter('renderEA',decorate);
+renderToday=wrapAfter('renderToday',function(){if(!S.evLoaded){var el=$('#todayCard');if(el)el.innerHTML='<div class="card-h"><h2>News hari ini</h2></div>'+skel(3);}decorate();});
+renderHero=wrapAfter('renderHero',function(){
+  if(!S.src){var px=$('#px');if(px)px.innerHTML='<span class="skel" style="display:block;height:48px;width:62%"></span>';}
+  var b2=$('#banner2');
+  if(b2&&!b2.hidden&&nmEvent()&&b2.insertAdjacentHTML)b2.insertAdjacentHTML('beforeend',' <button class="ghost" data-act="nmOpen" style="min-height:34px;padding:4px 12px;margin-left:8px">Mode News</button>');
+});
+analyze=(function(f){return async function(){await f();chime(S.active?'ok':'soft');vib(S.active?[30,40,30]:12);};})(analyze);
+
+/* ---- event: klik, ubah, tampil ---- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-act]'),bt=e.target.closest&&e.target.closest('button');
+  if(bt&&!bt.disabled)vib(bt.classList&&bt.classList.contains('primary')?16:8);
+  if(!b)return;
+  var a=b.getAttribute('data-act'),k=b.getAttribute('data-k');
+  if(a==='thm'){P.theme=k;pSave();applyPrefs();renderSettings();renderAll();}
+  else if(a==='fs'){P.fs=k;pSave();applyPrefs();renderSettings();setTimeout(function(){drawChart();},50);}
+  else if(a==='prefH'){P.haptic=!P.haptic;pSave();renderSettings();if(P.haptic)vib(30);}
+  else if(a==='prefS'){P.sound=!P.sound;pSave();renderSettings();if(P.sound)chime('ok');}
+  else if(a==='prefN'){P.newsMode=!P.newsMode;pSave();renderSettings();}
+  else if(a==='pinSet')pinSet();
+  else if(a==='pinRemove')pinRemove();
+  else if(a==='pinLock'){if(pinData())showLock();}
+  else if(a==='lk')lkKey(k);
+  else if(a==='lkDel'){LK.buf=LK.buf.slice(0,-1);renderLock('');}
+  else if(a==='lkClear'){LK.buf='';renderLock('');}
+  else if(a==='bkDl')bkDownload();
+  else if(a==='bkPick'){var fi=$('#bkFile');if(fi)fi.click();}
+  else if(a==='briefCopy')briefCopy();
+  else if(a==='nmOpen'){var ne=nmEvent()||S.events.filter(function(x){return x.time>Date.now();})[0];if(ne)openNM(ne.id,false);}
+  else if(a==='nmClose')closeNM(true);
+  else if(a==='nmCopy')nmCopy();
+  else if(a==='nmAct'){var ai=$('#nmAct'),v=ai?String(ai.value).trim():'';if(NM.id){if(v)S.actuals[NM.id]=v;else delete S.actuals[NM.id];save();renderNM();renderNews();}}
+});
+document.addEventListener('change',function(e){
+  var t=e.target;
+  if(t&&t.getAttribute&&t.getAttribute('data-nmck')!==null&&NM.id){
+    var i=+t.getAttribute('data-nmck'),arr=P.checks[NM.id]||[];arr[i]=!!t.checked;P.checks[NM.id]=arr;pSave();
+  }else if(t&&t.id==='bkFile'&&t.files&&t.files[0]){
+    var fr=new FileReader();fr.onload=function(){bkFromText(String(fr.result));t.value='';};fr.readAsText(t.files[0]);
+  }
+});
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden)LK.hiddenAt=Date.now();
+  else if(pinData()&&!LK.locked&&LK.hiddenAt&&Date.now()-LK.hiddenAt>60000)showLock();
+});
+
+/* ---- mulai ---- */
+pLoad();applyPrefs();
+if(pinData())showLock();
+renderSettings();
+setTimeout(hideSplash,1100);
+setInterval(nmTick,1000);
+setInterval(function(){if(!document.hidden){renderSummary();}},15000);
 
 (async function init(){
   await load();
