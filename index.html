@@ -300,6 +300,12 @@ button .ic{margin-right:6px}
 #setCard .swt{flex:none}
 .pinrow input{width:auto;flex:1 1 120px;min-width:0;max-width:200px}
 .pinrow button{flex:none}
+#chart{height:340px;touch-action:pan-y;cursor:crosshair;border-radius:10px;display:block}
+#insp{font-size:12px;min-height:18px;font-variant-numeric:tabular-nums;white-space:pre-wrap}
+.tfs button[data-act="zin"],.tfs button[data-act="zout"]{min-width:44px;padding:6px 0}
+.kvb{align-items:center}
+.kvb span{flex:1 1 0;min-width:0}
+.kvb b,.kvb .swt{flex:none}
 </style>
 </head>
 <body>
@@ -346,7 +352,10 @@ button .ic{margin-right:6px}
   <section class="page" id="pg-signal" hidden>
     <h1 class="pg-h">Signal</h1>
     <section class="card" id="biasCard"></section>
+    <section class="card" id="profCard"></section>
     <section class="card" id="sigCard"></section>
+    <section class="card" id="btCard"></section>
+    <section class="card" id="alertCard"></section>
     <section class="card" id="histCard"></section>
   </section>
 
@@ -382,6 +391,7 @@ button .ic{margin-right:6px}
   <section class="page" id="pg-tools" hidden>
     <h1 class="pg-h">Alat</h1>
     <section class="card" id="setCard"></section>
+    <section class="card" id="srcCard"></section>
     <section class="card" id="toolsCard">
       <h2>Kalkulator lot</h2>
       <div class="field" style="margin-top:10px">
@@ -1477,18 +1487,18 @@ function computeSMC(){
   var R=rangeHi-rangeLo;
   o.rangeHi=rangeHi;o.rangeLo=rangeLo;
   if(!(R>0))return o;
-  o.band=dir===1?{lo:rangeHi-0.79*R,hi:rangeHi-0.5*R}:{lo:rangeLo+0.5*R,hi:rangeLo+0.79*R};
+  o.band=dir===1?{lo:rangeHi-PR().fibBottom*R,hi:rangeHi-PR().fibTop*R}:{lo:rangeLo+PR().fibTop*R,hi:rangeLo+PR().fibBottom*R};
   var startT=H[E.ei].t,cands=[];
-  function add(label,zlo,zhi){
+  function add(label,zlo,zhi,zt){
     var lo=Math.max(zlo,o.band.lo),hi=Math.min(zhi,o.band.hi);
-    if(hi-lo>0.05)cands.push({label:label,rawLo:zlo,rawHi:zhi,lo:lo,hi:hi});
+    if(hi-lo>0.05)cands.push({label:label,rawLo:zlo,rawHi:zhi,lo:lo,hi:hi,t:zt});
   }
-  if(!mitigated(H,E.bi,E.zLo,E.zHi,dir))add('OB H1',E.zLo,E.zHi);
+  if(!mitigated(H,E.bi,E.zLo,E.zHi,dir))add('OB H1',E.zLo,E.zHi,H[E.ei].t);
   sm.ev.forEach(function(e){
-    if(e.dir===dir&&M[e.ei].t>=startT&&!mitigated(M,e.bi,e.zLo,e.zHi,dir))add('OB M15',e.zLo,e.zHi);
+    if(e.dir===dir&&M[e.ei].t>=startT&&!mitigated(M,e.bi,e.zLo,e.zHi,dir))add('OB M15',e.zLo,e.zHi,M[e.ei].t);
   });
   var si=0;while(si<M.length&&M[si].t<startT)si++;
-  fvgs(M,si,dir,0.15*o.A15).forEach(function(z){add('FVG M15',z.lo,z.hi);});
+  fvgs(M,si,dir,0.15*o.A15).forEach(function(z){add('FVG M15',z.lo,z.hi,M[Math.max(0,z.i-2)].t);});
   o.cands=cands;
   var best=null;
   if(dir===1){
@@ -1518,7 +1528,7 @@ function evaluate(){
   var o=computeSMC();S.smc=o;
   var out={dir:'NO TRADE',score:0,checks:[],src:'SMC (H1 + M15)'};
   if(!o){out.reason='Data candle belum cukup untuk dihitung.';return out;}
-  var px=o.px,closed=marketClosed();
+  var px=o.px,closed=S.btMode?false:marketClosed();
   out.px=px;
   if(!o.bias){out.reason='Struktur H1 belum jelas (belum ada BOS atau CHoCH).';return out;}
   var buy=o.bias===1,E=o.E,z=o.best,A1=o.A1,checks=[];
@@ -1528,22 +1538,22 @@ function evaluate(){
   if(z&&!o.passed){inZone=px>=z.lo&&px<=z.hi;dist=inZone?0:(buy?px-z.hi:z.lo-px);}
   var reach=!!z&&!o.passed&&dist<=3*A1;
   checks.push({label:'Harga mendekati zona',ok:reach,detail:!z?'belum ada zona':o.passed?'harga sudah melewati zona':(inZone?'harga sudah di dalam zona':'zona '+f2(dist)+' dolar dari harga')});
-  checks.push({label:'OB atau FVG di Fib 0.5 sampai 0.79',ok:!!z,detail:z?(z.label+' '+f2(z.lo)+' sampai '+f2(z.hi)):'tidak ada OB atau FVG valid di zona OTE'});
+  checks.push({label:'OB atau FVG di Fib '+PR().fibTop+' sampai '+PR().fibBottom,ok:!!z,detail:z?(z.label+' '+f2(z.lo)+' sampai '+f2(z.hi)):'tidak ada OB atau FVG valid di zona OTE'});
   checks.push({label:'Liquidity (IDM) diambil',ok:o.idmTaken,detail:o.idmTaken?('swing M15 di '+f2(o.idmLevel)+' sudah disapu'):'belum ada sweep'});
   var entry=null,sl=null,tp=null,rr=null;
   if(z&&!o.passed){
     entry=inZone?px:(z.lo+z.hi)/2;
-    sl=buy?z.rawLo-0.3*o.A15:z.rawHi+0.3*o.A15;
-    sl=buy?Math.min(sl,entry-1.0*o.A15):Math.max(sl,entry+1.0*o.A15);
+    sl=buy?z.rawLo-PR().slBuf*o.A15:z.rawHi+PR().slBuf*o.A15;
+    sl=buy?Math.min(sl,entry-PR().minSL*o.A15):Math.max(sl,entry+PR().minSL*o.A15);
     tp=buy?o.rangeHi:o.rangeLo;
     var risk=buy?entry-sl:sl-entry,rew=buy?tp-entry:entry-tp;
     rr=risk>0?rew/risk:null;
   }
-  var rrOk=rr!=null&&rr>=2;
-  checks.push({label:'RR minimal 1:2',ok:rrOk,detail:rr!=null?('RR 1:'+rr.toFixed(1)+', TP di '+f2(tp)):'tidak bisa dihitung'});
+  var rrOk=rr!=null&&rr>=PR().minRR;
+  checks.push({label:'RR minimal 1:'+PR().minRR,ok:rrOk,detail:rr!=null?('RR 1:'+rr.toFixed(1)+', TP di '+f2(tp)):'tidak bisa dihitung'});
   checks.push({label:'Volatilitas wajar',ok:A1>=o.avgA1*0.5&&A1<=o.avgA1*2,detail:'ATR H1 '+f2(A1)+' vs rata-rata '+f2(o.avgA1)});
-  var nd=newsDelta();
-  if(!S.events.length)checks.push({label:'Bebas news high impact',ok:false,detail:'kalender belum dimuat, muat atau tambah manual'});
+  var nd=S.btMode?null:newsDelta();
+  if(!S.events.length&&!S.btMode)checks.push({label:'Bebas news high impact',ok:false,detail:'kalender belum dimuat, muat atau tambah manual'});
   else checks.push({label:'Bebas news high impact',ok:!(nd&&Math.abs(nd.d)<=30),detail:nd&&Math.abs(nd.d)<=30?(nd.e.title+' dalam '+Math.round(nd.d)+' menit'):'tidak ada news dalam 30 menit'});
   var score=checks.filter(function(x){return x.ok;}).length;
   var pass=!closed&&inRange&&reach&&!!z&&rrOk&&score>=S.minScore;
@@ -1553,6 +1563,7 @@ function evaluate(){
   }else if(pass){
     out.dir=buy?'BUY':'SELL';out.entry=entry;out.sl=sl;out.tp=tp;out.rr=rr;out.inZone=inZone;out.zone={lo:z.lo,hi:z.hi,label:z.label};
     out.reason='H1: '+E.type+(buy?' bullish':' bearish')+' di '+f2(E.level)+'. Range leg '+f2(o.rangeLo)+' sampai '+f2(o.rangeHi)+', zona Fib 0.5 sampai 0.79 di '+f2(o.band.lo)+' sampai '+f2(o.band.hi)+' ('+(buy?'discount':'premium')+'). Zona entry: '+z.label+' '+f2(z.lo)+' sampai '+f2(z.hi)+'. '+(inZone?'Harga sudah di zona, entry sekarang.':(buy?'Pasang buy limit':'Pasang sell limit')+' di '+f2(entry)+'.')+' SL di luar zona, TP di '+(buy?'high':'low')+' leg '+f2(tp)+' (RR 1:'+rr.toFixed(1)+'). '+(o.idmTaken?'Liquidity sudah disapu sebelum zona.':'Liquidity belum disapu, hati-hati.');
+    if(rr>5)out.reason+=' Catatan: RR sangat besar karena SL ketat, jadi peluang kena SL lebih tinggi.';
   }else{
     out.reason='Bias H1 '+(buy?'bullish':'bearish')+'. Belum layak entry. Yang belum terpenuhi: '+checks.filter(function(x){return !x.ok;}).map(function(x){return x.label.toLowerCase();}).join(', ')+'.';
   }
@@ -2563,6 +2574,384 @@ renderSettings();
 setTimeout(hideSplash,1100);
 setInterval(nmTick,1000);
 setInterval(function(){if(!document.hidden){renderSummary();}},15000);
+
+/* ================= FASE 2A: sumber data, chart ala TradingView, profil strategi, backtest, alert level ================= */
+var P2={autoOn:true,profile:'seimbang',alerts:[]};
+var TD={key:'',day:'',n:0,mode:'auto',h1:null,h1At:0,m15:null,m15At:0,err:'',failAt:0,note:''};
+var PROFILES={
+  konservatif:{label:'Konservatif',minScore:7,minRR:2.5,fibTop:0.618,fibBottom:0.79,slBuf:0.4,minSL:1.2,desc:'Zona Fib 0.618 sampai 0.79, RR minimal 1:2.5, SL lebih longgar. Sinyal paling jarang.'},
+  seimbang:{label:'Seimbang',minScore:7,minRR:2,fibTop:0.5,fibBottom:0.79,slBuf:0.3,minSL:1.0,desc:'Zona Fib 0.5 sampai 0.79, RR minimal 1:2, semua syarat harus lolos.'},
+  agresif:{label:'Agresif',minScore:5,minRR:1.5,fibTop:0.5,fibBottom:0.79,slBuf:0.25,minSL:0.8,desc:'RR minimal 1:1.5 dan 2 syarat boleh gagal. Sinyal lebih sering, tapi lebih banyak yang jelek.'}
+};
+function PR(){return PROFILES[P2.profile]||PROFILES.seimbang;}
+function p2Load(){
+  try{var d=JSON.parse(localStorage.getItem('golddesk:p2:v1')||'null');if(d){if(d.profile)P2.profile=d.profile;if(typeof d.autoOn==='boolean')P2.autoOn=d.autoOn;if(Array.isArray(d.alerts))P2.alerts=d.alerts;}}catch(e){}
+  try{var t=JSON.parse(localStorage.getItem('golddesk:td:v1')||'null');if(t){TD.key=t.key||'';TD.day=t.day||'';TD.n=t.n||0;TD.mode=t.mode||'auto';}}catch(e){}
+}
+function p2Save(){try{localStorage.setItem('golddesk:p2:v1',JSON.stringify({profile:P2.profile,autoOn:P2.autoOn,alerts:P2.alerts}));}catch(e){}}
+function tdSave(){try{localStorage.setItem('golddesk:td:v1',JSON.stringify({key:TD.key,day:TD.day,n:TD.n,mode:TD.mode}));}catch(e){}}
+
+/* ---- offset: manual (Samakan) atau otomatis ke spot untuk data PAXG ---- */
+function autoOffActive(){return !!(P2.autoOn&&!S.offset&&S.cross&&String(S.src).indexOf('PAXG')>=0&&!S.btMode);}
+function fixSrc(){if(String(S.src).indexOf('PAXG')>=0){S.src=String(S.src).replace(', disamakan ke spot','')+(autoOffActive()?', disamakan ke spot':'');}}
+function effOff(){if(S.btMode)return 0;return S.offset+(autoOffActive()?-S.cross.diff:0);}
+cs=function(){var o=effOff();return S.raw.map(function(k){return {t:k.t,o:k.o+o,h:k.h+o,l:k.l+o,c:k.c+o};});};
+csH=function(){var o=effOff();return S.rawH.map(function(k){return {t:k.t,o:k.o+o,h:k.h+o,l:k.l+o,c:k.c+o};});};
+price=function(){var o=effOff();if(S.raw.length)return S.raw[S.raw.length-1].c+o;return S.spot==null?null:S.spot+o;};
+
+/* ---- Twelve Data (opsional, pakai API key sendiri) ---- */
+function tdDay(){return new Date().toISOString().slice(0,10);}
+function tdBudget(){if(TD.day!==tdDay()){TD.day=tdDay();TD.n=0;tdSave();}return TD.n<760;}
+function tdWanted(){return !!TD.key&&TD.mode!=='paxg'&&tdBudget()&&(Date.now()-TD.failAt>5*60000);}
+async function tdSeries(interval,size){
+  var u='https://api.twelvedata.com/time_series?symbol=XAU%2FUSD&interval='+interval+'&outputsize='+size+'&order=ASC&timezone=UTC&apikey='+encodeURIComponent(TD.key);
+  var r=await fetch(u),j=await r.json();
+  TD.n++;tdSave();
+  if(!j||j.status==='error'||!Array.isArray(j.values))throw new Error(j&&j.message?String(j.message).slice(0,140):'respons tidak dikenal');
+  var out=j.values.map(function(v){return {t:Date.parse(String(v.datetime).replace(' ','T')+'Z'),o:+v.open,h:+v.high,l:+v.low,c:+v.close};}).filter(function(x){return !isNaN(x.t)&&!isNaN(x.c);});
+  if(out.length<50)throw new Error('data terlalu sedikit ('+out.length+' candle)');
+  return out;
+}
+async function tdGet(){
+  var now=Date.now();
+  if(TD.m15&&TD.h1&&now-TD.m15At<60000)return {c:TD.m15,h:TD.h1};
+  var m=await tdSeries('15min',300);TD.m15=m;TD.m15At=now;
+  if(!TD.h1||now-TD.h1At>10*60000){var h=await tdSeries('1h',300);TD.h1=h;TD.h1At=now;}
+  return {c:TD.m15,h:TD.h1};
+}
+async function tdTest(){
+  var m=$('#tdMsg');if(m)m.textContent='Menguji...';
+  try{var s=await tdSeries('15min',60),last=s[s.length-1];TD.failAt=0;TD.err='';if(m)m.textContent='Berhasil. XAU/USD terbaca, harga terakhir '+f2(last.c)+' ('+hm(last.t)+' WIB).';TD.m15=null;TD.h1=null;refresh();}
+  catch(e){TD.err=String(e&&e.message||e);if(m)m.textContent='Gagal: '+TD.err;}
+  renderSrcCard(true,true);
+}
+
+/* ---- refresh baru: Twelve Data kalau ada, lalu PAXG ---- */
+refresh=async function(){
+  var c=null,h=null,name='';
+  if(tdWanted()){
+    try{var r=await tdGet();c=r.c;h=r.h;name='Twelve Data XAU/USD (spot)';TD.err='';}
+    catch(e){TD.err=String(e&&e.message||e).slice(0,140);TD.failAt=Date.now();}
+  }
+  if(!c||!h){
+    var rr=await Promise.all([fetchCandles('15m'),fetchCandles('1h')]);c=rr[0];h=rr[1];
+    if(c&&h)name='Binance PAXG (proxy emas)';
+  }
+  if(c&&h){
+    S.lastOk=name.indexOf('Twelve')===0?TD.m15At:Date.now();S.raw=c;S.rawH=h;S.feedOk=true;S.spot=c[c.length-1].c;
+    S.src=name+(name.indexOf('PAXG')>=0&&autoOffActive()?', disamakan ke spot':'');
+  }else{
+    S.feedOk=false;S.raw=[];S.rawH=[];
+    var sp=await fetchSpot();
+    if(sp!=null){S.spot=sp;S.src='gold-api.com (harga saja)';}else if(S.spot==null)S.src='tidak ada feed';
+  }
+  try{S.smc=S.feedOk?computeSMC():null;}catch(e){S.smc=null;}
+  crossCheck();checkActive();autoScan();checkAlerts();renderAll();
+};
+crossCheck=async function(){
+  if(!S.feedOk||Date.now()-(S.crossAt||0)<60000)return;
+  S.crossAt=Date.now();
+  var sp=await fetchSpot();
+  if(sp!=null&&S.raw.length)S.cross={spot:sp,diff:S.raw[S.raw.length-1].c-sp};else S.cross=null;
+  fixSrc();
+  if(autoOffActive()){try{S.smc=computeSMC();}catch(e){}renderAll();}else renderSrc();
+};
+
+/* ---- profil strategi: tambal evaluate dan computeSMC lewat PR() sudah ada di kode; wrapper tampilan ---- */
+function renderProf(){
+  var el=$('#profCard');if(!el)return;
+  var h='<h2>Profil strategi</h2><div class="tfs" role="group" style="margin:10px 0 0">';
+  ['konservatif','seimbang','agresif'].forEach(function(k){h+='<button data-act="prof" data-k="'+k+'" aria-pressed="'+(P2.profile===k?'true':'false')+'">'+PROFILES[k].label+'</button>';});
+  h+='</div><p class="muted" style="margin:10px 0 0;font-size:13px">'+esc((PROFILES[P2.profile]||PROFILES.seimbang).desc)+'</p><p class="muted" style="margin:4px 0 0;font-size:12px">Skor minimal '+S.minScore+' dari 7, RR minimal 1:'+PR().minRR+', zona Fib '+PR().fibTop+' sampai '+PR().fibBottom+'.</p>';
+  el.innerHTML=h;
+}
+function setProfile(k){
+  if(!PROFILES[k])return;
+  P2.profile=k;S.minScore=PROFILES[k].minScore;p2Save();save();
+  try{S.smc=S.feedOk?computeSMC():null;}catch(e){}
+  renderAll();
+}
+
+/* ---- alert level harga ---- */
+function renderAlerts(force){
+  var el=$('#alertCard');if(!el)return;
+  var ae=document.activeElement;if(!force&&ae&&ae.tagName==='INPUT'&&el.contains&&el.contains(ae))return;
+  var p=price(),h='<h2>Alert level harga</h2><div class="pinrow"><input id="alPrice" inputmode="decimal" placeholder="mis. '+(p?f2(p+10):'4200.00')+'"><button data-act="alAdd">Tambah alert</button></div><p id="alMsg" class="muted" style="font-size:13px;margin:6px 0 0"></p>';
+  if(P2.alerts.length){
+    h+='<div style="margin-top:8px">'+P2.alerts.map(function(a){
+      return '<div class="kv kvb"><span>'+(a.hit?'Tercapai '+hm(a.hitAt):(a.dir==='above'?'Naik ke':'Turun ke'))+'</span><b>'+f2(a.price)+'</b><button class="ghost swt" data-act="alDel" data-k="'+esc(a.id)+'">Hapus</button></div>';
+    }).join('')+'</div>';
+  }else h+='<p class="muted" style="font-size:13px;margin:8px 0 0">Belum ada alert. Bunyi dan getar muncul saat harga menyentuh level (cuma saat tab terbuka).</p>';
+  el.innerHTML=h;decorate();
+}
+function alAdd(){
+  var inp=$('#alPrice'),m=$('#alMsg'),v=parseFloat(String(inp?inp.value:'').replace(',','.')),p=price();
+  if(!(v>0)){if(m)m.textContent='Isi angka harga yang valid.';return;}
+  if(p==null){if(m)m.textContent='Harga belum tersedia, coba lagi sebentar.';return;}
+  if(Math.abs(v-p)<0.05){if(m)m.textContent='Level terlalu dekat dengan harga sekarang.';return;}
+  if(P2.alerts.length>=20){if(m)m.textContent='Maksimal 20 alert.';return;}
+  P2.alerts.push({id:'a'+Date.now(),price:v,dir:v>p?'above':'below',made:Date.now(),hit:false});p2Save();renderAlerts(true);
+}
+function checkAlerts(){
+  if(!P2.alerts.length||!S.raw.length)return;
+  var c=cs(),changed=false;
+  P2.alerts.forEach(function(a){
+    if(a.hit)return;
+    var pp=price(),rng=c.filter(function(k){return k.t>a.made;}),hi=pp==null?-Infinity:pp,lo=pp==null?Infinity:pp;
+    rng.forEach(function(k){hi=Math.max(hi,k.h);lo=Math.min(lo,k.l);});
+    if((a.dir==='above'&&hi>=a.price)||(a.dir==='below'&&lo<=a.price)){a.hit=true;a.hitAt=Date.now();changed=true;alertUser('Alert: harga menyentuh '+f2(a.price));}
+  });
+  if(changed){p2Save();renderAlerts(true);}
+}
+
+/* ---- backtest mini ---- */
+var BT={running:false,res:null,msg:''};
+async function fetchLong(tf,limit){
+  var hosts=['https://data-api.binance.vision','https://api.binance.com'];
+  for(var i=0;i<hosts.length;i++){
+    try{
+      var r=await fetch(hosts[i]+'/api/v3/klines?symbol=PAXGUSDT&interval='+tf+'&limit='+limit);
+      if(!r.ok)continue;var j=await r.json();
+      if(Array.isArray(j)&&j.length>300)return j.map(function(k){return {t:k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4]};});
+    }catch(e){}
+  }
+  return null;
+}
+function btStep(a,k){
+  var buy=a.dir==='BUY';
+  if(a.status==='pending'){
+    if(k.t>=a.exp){a.res='EXP';return true;}
+    if(buy?k.l<=a.entry:k.h>=a.entry){a.status='active';if(buy?k.l<=a.sl:k.h>=a.sl){a.res='SL';return true;}return false;}
+    if(buy?k.h>=a.tp:k.l<=a.tp){a.res='VOID';return true;}
+    return false;
+  }
+  if(buy?k.l<=a.sl:k.h>=a.sl){a.res='SL';return true;}
+  if(buy?k.h>=a.tp:k.l<=a.tp){a.res='TP';return true;}
+  return false;
+}
+async function runBacktest(){
+  if(BT.running)return;
+  BT.running=true;BT.msg='Mengambil data PAXG (sekitar 10 hari)...';BT.res=null;renderBT();
+  var M=await fetchLong('15m',1000),H=await fetchLong('1h',500);
+  if(!M||!H){BT.running=false;BT.msg='Gagal mengambil data. Cek koneksi lalu coba lagi.';renderBT();return;}
+  var sv={raw:S.raw,rawH:S.rawH,off:S.offset,smc:S.smc,ev:S.events,mode:S.btMode};
+  S.btMode=true;S.offset=0;
+  var trades=[],act=null,err=null;
+  try{
+    for(var i=200;i<M.length-1;i++){
+      var k=M[i];
+      if(act&&btStep(act,k)){trades.push(act);act=null;}
+      if(!act&&i%4===0){
+        S.raw=M.slice(Math.max(0,i-299),i+1);
+        S.rawH=H.filter(function(x){return x.t+3600000<=k.t+900000;}).slice(-300);
+        if(S.rawH.length>=120){
+          var r=evaluate();
+          if(r&&(r.dir==='BUY'||r.dir==='SELL'))act={dir:r.dir,entry:r.entry,sl:r.sl,tp:r.tp,rr:r.rr,t0:k.t,exp:k.t+12*36e5,status:r.inZone?'active':'pending'};
+        }
+      }
+      if(i%25===0){BT.msg='Menghitung '+Math.round((i-200)/(M.length-201)*100)+'%...';renderBT();await new Promise(function(r){setTimeout(r,0);});}
+    }
+  }catch(e){err=e;}
+  S.raw=sv.raw;S.rawH=sv.rawH;S.offset=sv.off;S.smc=sv.smc;S.btMode=sv.mode;
+  BT.running=false;
+  if(err){BT.msg='Backtest gagal: '+(err.message||err);renderBT();return;}
+  var done=trades.filter(function(t){return t.res==='TP'||t.res==='SL';}),eq=[0],cum=0,peak=0,dd=0,streak=0,ms=0,wins=0,gw=0,gl=0;
+  done.forEach(function(t){
+    var R=t.res==='TP'?(t.rr||1):-1;
+    if(t.res==='TP'){wins++;gw+=R;streak=0;}else{gl+=1;streak++;ms=Math.max(ms,streak);}
+    cum+=R;eq.push(cum);peak=Math.max(peak,cum);dd=Math.max(dd,peak-cum);
+  });
+  BT.trades=trades;BT.res={signals:trades.length+(act?1:0),filled:done.length,tp:wins,sl:done.length-wins,void:trades.filter(function(t){return t.res==='VOID';}).length,exp:trades.filter(function(t){return t.res==='EXP';}).length,
+    win:done.length?wins/done.length:0,exp_r:done.length?cum/done.length:0,pf:gl?gw/gl:(gw?Infinity:0),dd:dd,ms:ms,eq:eq,days:Math.round((M[M.length-1].t-M[200].t)/864e5*10)/10,profile:PR().label,rr:(done.length?done.reduce(function(a,t){return a+(t.rr||0);},0)/done.length:0)};
+  BT.msg='';renderBT();
+}
+function renderBT(){
+  var el=$('#btCard');if(!el)return;
+  var h='<h2>Backtest mini</h2><p class="muted" style="font-size:13px;margin:6px 0 10px">Memutar ulang aturan sinyal profil '+esc(PR().label)+' pada data PAXG sekitar 10 hari terakhir. Tanpa filter news, spread, dan slippage.</p>';
+  h+='<div class="row" style="margin-top:0"><button class="primary" data-act="btRun"'+(BT.running?' disabled':'')+'>'+(BT.running?'Menghitung...':'Jalankan backtest')+'</button></div>';
+  if(BT.msg)h+='<p class="muted" style="font-size:13px;margin:8px 0 0">'+esc(BT.msg)+'</p>';
+  var r=BT.res;
+  if(r){
+    h+='<div class="sum" style="margin-top:12px">'+
+      tile('target','Sinyal',r.signals+'',r.filled+' terisi, '+r.void+' batal, '+r.exp+' kadaluarsa')+
+      tile('bolt','Winrate',r.filled?(r.win*100).toFixed(0)+'%':'-',r.tp+' TP, '+r.sl+' SL',r.win>=0.5?'up':'dn')+
+      tile('wallet','Expectancy',(r.exp_r>=0?'+':'')+r.exp_r.toFixed(2)+' R','rata-rata per trade',r.exp_r>0?'up':'dn')+
+      tile('pulse','Profit factor',r.pf===Infinity?'tak terhingga':r.pf.toFixed(2),'total menang / total kalah')+
+      tile('shield','Drawdown maks',r.dd.toFixed(1)+' R','kalah beruntun maks '+r.ms)+
+      tile('clock','RR rata-rata','1:'+r.rr.toFixed(1),r.days+' hari data, profil '+esc(r.profile),r.rr>5?'dn':'')+'</div>';
+    var eq=r.eq,mx=Math.max.apply(null,eq.concat([0.5])),mn=Math.min.apply(null,eq.concat([-0.5])),W=300,Hh=80;
+    var pts=eq.map(function(v,i){return (eq.length>1?i/(eq.length-1)*W:0).toFixed(1)+','+(Hh-4-(v-mn)/(mx-mn)*(Hh-8)).toFixed(1);}).join(' ');
+    h+='<svg viewBox="0 0 300 80" style="width:100%;height:90px;margin-top:12px;background:rgba(0,0,0,.2);border-radius:10px"><polyline points="'+pts+'" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/></svg><p class="muted" style="font-size:12px;margin:4px 0 0">Kurva hasil kumulatif dalam R (1 R = jarak ke SL).</p>';
+    h+='<div class="warnbox" style="margin-top:10px"><p>'+(r.rr>5?'RR rata-rata sangat besar karena SL ketat, jadi sebagian besar sinyal berujung SL. ':'')+(r.filled<30?'Sampel kecil ('+r.filled+' trade), jadi angkanya belum bisa dipercaya. ':'')+'Data PAXG berbeda dari broker, dan hasil masa lalu bukan jaminan. Pakai ini buat membandingkan profil, bukan sebagai bukti.</p></div>';
+  }
+  el.innerHTML=h;decorate();
+}
+
+/* ---- kartu sumber harga di menu Alat ---- */
+function renderSrcCard(keepMsg,force){
+  var el=$('#srcCard');if(!el)return;
+  var ae=document.activeElement;if(!force&&ae&&ae.tagName==='INPUT'&&el.contains&&el.contains(ae))return;
+  var oldMsg=keepMsg&&$('#tdMsg')?$('#tdMsg').textContent:'';
+  function chips(act,cur,opts){return '<div class="tfs" role="group" style="margin:0">'+opts.map(function(o){return '<button data-act="'+act+'" data-k="'+o[0]+'" aria-pressed="'+(cur===o[0]?'true':'false')+'">'+o[1]+'</button>';}).join('')+'</div>';}
+  var h='<h2>Sumber harga</h2><p class="muted" style="font-size:13px;margin:6px 0 10px">Sekarang: <b style="color:var(--text)">'+esc(S.src||'memuat')+'</b></p>';
+  h+='<h4>Mode</h4>'+chips('tdMode',TD.mode,[['auto','Otomatis'],['paxg','PAXG saja'],['td','Twelve Data']]);
+  h+='<div class="kv kvb"><span>Samakan PAXG ke harga spot otomatis<small style="display:block">Mengurangi selisih PAXG dengan XAUUSD memakai harga spot gold-api</small></span><button class="swt" data-act="autoOff" aria-pressed="'+(P2.autoOn?'true':'false')+'">'+(P2.autoOn?'Aktif':'Mati')+'</button></div>';
+  h+='<h4>API key Twelve Data (opsional)</h4><div class="pinrow"><input id="tdKey" type="password" autocomplete="off" placeholder="'+(TD.key?'Key tersimpan (ketik untuk ganti)':'Tempel API key')+'"><button data-act="tdSave">Simpan dan tes</button>'+(TD.key?'<button class="ghost" data-act="tdDel">Hapus key</button>':'')+'</div>';
+  h+='<p id="tdMsg" class="muted" style="font-size:13px;margin:6px 0 0">'+esc(oldMsg||(TD.err?'Error terakhir: '+TD.err:''))+'</p>';
+  h+='<p class="muted" style="font-size:12px;margin:6px 0 0">Kuota terpakai hari ini: '+TD.n+' dari 800'+(TD.key?'. Web memperbarui tiap 60 detik (sekitar 66 kuota per jam).':'.')+'</p>';
+  h+='<details style="margin-top:10px"><summary>Cara ambil API key gratis</summary><ol class="bullets"><li>Buka twelvedata.com dan daftar paket gratis (Basic).</li><li>Di dashboard, buka bagian API Keys lalu salin key lu.</li><li>Tempel di kolom di atas lalu tekan Simpan dan tes.</li></ol><p class="muted" style="font-size:12px">Key cuma disimpan di HP ini, bukan di repo. Gua belum bisa memastikan XAU/USD termasuk paket gratis. Kalau tesnya gagal, web otomatis balik ke PAXG.</p></details>';
+  el.innerHTML=h;decorate();
+}
+
+/* ---- chart ala TradingView ---- */
+S.view={n:90,off:0};
+function niceStep(range,n){var raw=range/n,p=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/p;return (f<1.5?1:f<3?2:f<7?5:10)*p;}
+drawChart=function(){
+  var cv=$('#chart');if(!cv||!cv.getContext)return;
+  var ctx=cv.getContext('2d'),dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;
+  cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  var st=getComputedStyle(document.documentElement);
+  var C={up:'#26a69a',dn:'#ef5350',acc:st.getPropertyValue('--accent').trim()||'#e3b04b',mut:st.getPropertyValue('--muted').trim()||'#999',line:st.getPropertyValue('--line').trim()||'#333',txt:st.getPropertyValue('--text').trim()||'#eee',bg:'#131722'};
+  ctx.fillStyle='rgba(0,0,0,.28)';ctx.fillRect(0,0,w,h);
+  var all=cs(),insp=$('#insp');
+  if(!all.length){ctx.fillStyle=C.mut;ctx.font='14px system-ui';ctx.fillText('Chart butuh feed candle, belum tersedia.',12,28);if(insp)insp.innerHTML='';return;}
+  var V=S.view;V.n=Math.max(25,Math.min(220,V.n));
+  var maxOff=Math.max(0,all.length-30);V.off=Math.max(0,Math.min(maxOff,V.off));
+  var endI=all.length-V.off,startI=Math.max(0,endI-V.n),data=all.slice(startI,endI);
+  var o=S.smc,sh=S.show,sig=S.active||(S.analysis&&S.analysis.entry!=null?S.analysis:null);
+  var lo=Math.min.apply(null,data.map(function(k){return k.l;})),hi=Math.max.apply(null,data.map(function(k){return k.h;})),rng=hi-lo||1;
+  function incl(v){if(v!=null&&isFinite(v)&&Math.abs(v-(lo+hi)/2)<rng*1.6){lo=Math.min(lo,v);hi=Math.max(hi,v);}}
+  if(sig){incl(sig.sl);incl(sig.tp);incl(sig.entry);}
+  if(o&&o.best&&sh.zone){incl(o.best.lo);incl(o.best.hi);}
+  var pad=(hi-lo)*0.07;lo-=pad;hi+=pad;
+  var L=0,Rm=60,T=8,Bm=22,pw=w-L-Rm,ph=h-T-Bm,cw=pw/data.length,t0=data[0].t,step=data.length>1?data[1].t-data[0].t:900000;
+  var Y=function(v){return T+(hi-v)/(hi-lo)*ph;},Xt=function(t){return L+((t-t0)/step+0.5)*cw;},Vy=function(y){return hi-(y-T)/ph*(hi-lo);};
+  S.cm={L:L,cw:cw,data:data,T:T,ph:ph,lo:lo,hi:hi,pw:pw};
+  var p=data[data.length-1].c,yP=Y(p);
+  /* grid harga */
+  var stp=niceStep(hi-lo,5);ctx.font='11px system-ui';ctx.lineWidth=1;
+  for(var v=Math.ceil(lo/stp)*stp;v<=hi;v+=stp){var y=Math.round(Y(v))+.5;ctx.strokeStyle='rgba(255,255,255,.06)';ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(L+pw,y);ctx.stroke();if(Math.abs(y-yP)>12){ctx.fillStyle=C.mut;ctx.fillText(f2(v),L+pw+5,y+4);}}
+  /* grid waktu */
+  var TICKS=[9e5,18e5,36e5,72e5,144e5,216e5,432e5,864e5],tk=864e5;
+  for(var ti=0;ti<TICKS.length;ti++){if(TICKS[ti]/step*cw>=72){tk=TICKS[ti];break;}}
+  var lastDay='';
+  data.forEach(function(k){
+    if((k.t+7*36e5)%tk!==0)return;
+    var x=Math.round(Xt(k.t))+.5;if(x<L+10||x>L+pw-10)return;
+    ctx.strokeStyle='rgba(255,255,255,.05)';ctx.beginPath();ctx.moveTo(x,T);ctx.lineTo(x,T+ph);ctx.stroke();
+    var dk=dayKey(k.t),lbl=(dk!==lastDay&&tk<864e5&&hm(k.t)==='00:00')?dayLbl(k.t):(tk>=864e5?dayLbl(k.t):hm(k.t));lastDay=dk;
+    ctx.fillStyle=C.mut;ctx.textAlign='center';ctx.fillText(lbl,x,h-6);ctx.textAlign='left';
+  });
+  /* Fib dan zona OB / FVG */
+  if(o&&o.band&&sh.fib){var yA=Math.max(T,Y(o.band.hi)),yB=Math.min(T+ph,Y(o.band.lo));if(yB>yA){ctx.fillStyle='rgba(227,176,75,.07)';ctx.fillRect(L,yA,pw,yB-yA);}}
+  var used=[];
+  function put(txt,x,y,col,al){ctx.font='10px system-ui';var wd=ctx.measureText(txt).width,x0=al==='r'?x-wd:x;for(var u=0;u<used.length;u++){var b=used[u];if(x0<b[0]+b[2]&&x0+wd>b[0]&&y-9<b[1]+b[3]&&y+2>b[1])return;}used.push([x0,y-9,wd,11]);ctx.fillStyle=col;ctx.fillText(txt,x0,y);}
+  if(o&&o.cands&&sh.zone){
+    o.cands.forEach(function(z){
+      var isBest=o.best&&z.lo===o.best.lo&&z.hi===o.best.hi,x1=z.t!=null?Math.max(L,Xt(z.t)):L,ya=Y(z.hi),yb=Y(z.lo);
+      if(yb<T||ya>T+ph)return;
+      var col=z.label.indexOf('FVG')===0?'110,168,255':'227,176,75';
+      ctx.fillStyle='rgba('+col+','+(isBest?.26:.14)+')';ctx.fillRect(x1,ya,L+pw-x1,Math.max(2,yb-ya));
+      ctx.strokeStyle='rgba('+col+','+(isBest?.9:.45)+')';ctx.lineWidth=1;ctx.strokeRect(Math.round(x1)+.5,Math.round(ya)+.5,L+pw-x1,Math.max(2,yb-ya));
+      put(z.label,Math.max(L+4,x1+4),ya+11,'rgb('+col+')','l');
+    });
+  }
+  /* candle */
+  var bw=Math.max(1,Math.round(cw*0.7));
+  data.forEach(function(k,i){
+    var x=Math.round(L+i*cw+cw/2),up=k.c>=k.o,col=up?C.up:C.dn;
+    ctx.fillStyle=ctx.strokeStyle=col;ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x+.5,Math.round(Y(k.h)));ctx.lineTo(x+.5,Math.round(Y(k.l)));ctx.stroke();
+    var y1=Math.round(Y(Math.max(k.o,k.c))),y2=Math.round(Y(Math.min(k.o,k.c)));
+    ctx.fillRect(x-Math.floor(bw/2),y1,bw,Math.max(1,y2-y1));
+  });
+  /* struktur BOS / CHoCH */
+  if(o&&o.ev15&&sh.struct){
+    o.ev15.slice(-4).forEach(function(e){
+      var x1=Math.max(L,Xt(e.pt)),x2=Xt(e.bt),yy=Y(e.level);if(x2<L||yy<T||yy>T+ph)return;
+      var col=e.dir===1?C.up:C.dn;ctx.strokeStyle=col;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(x1,yy);ctx.lineTo(x2,yy);ctx.stroke();ctx.setLineDash([]);
+      put(e.type,x2-2,yy-3,col,'r');
+    });
+  }
+  /* garis sinyal */
+  if(sig){
+    [['Entry',sig.entry,C.txt],['TP',sig.tp,C.up],['SL',sig.sl,C.dn]].forEach(function(r){
+      var yy=Y(r[1]);if(yy<T||yy>T+ph)return;
+      ctx.strokeStyle=r[2];ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(L,yy);ctx.lineTo(L+pw,yy);ctx.stroke();ctx.setLineDash([]);
+      put(r[0]+' '+f2(r[1]),L+pw-4,yy-4,r[2],'r');
+    });
+  }
+  /* harga terakhir ala TradingView */
+  var lastUp=data[data.length-1].c>=data[data.length-1].o,lc=lastUp?C.up:C.dn;
+  ctx.strokeStyle=lc;ctx.setLineDash([2,3]);ctx.beginPath();ctx.moveTo(L,Math.round(yP)+.5);ctx.lineTo(L+pw,Math.round(yP)+.5);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=lc;ctx.fillRect(L+pw,yP-9,Rm,18);ctx.font='11px system-ui';ctx.fillStyle='#fff';ctx.fillText(f2(p),L+pw+5,yP+4);
+  /* crosshair */
+  var li=data.length-1,cross=false;
+  if(S.chX!=null&&S.chX>=L&&S.chX<=L+pw&&S.chY>=T&&S.chY<=T+ph){
+    li=Math.max(0,Math.min(data.length-1,Math.floor((S.chX-L)/cw)));cross=true;
+    var cx=Math.round(L+li*cw+cw/2)+.5,cy=Math.round(S.chY)+.5,pv=Vy(S.chY);
+    ctx.strokeStyle='rgba(255,255,255,.55)';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(cx,T);ctx.lineTo(cx,T+ph);ctx.moveTo(L,cy);ctx.lineTo(L+pw,cy);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#434651';ctx.fillRect(L+pw,cy-9,Rm,18);ctx.fillStyle='#fff';ctx.font='11px system-ui';ctx.fillText(f2(pv),L+pw+5,cy+4);
+    var tl=hm(data[li].t),tw=ctx.measureText(tl).width+12;ctx.fillStyle='#434651';ctx.fillRect(Math.max(L,Math.min(L+pw-tw,cx-tw/2)),h-Bm+2,tw,16);ctx.fillStyle='#fff';ctx.fillText(tl,Math.max(L,Math.min(L+pw-tw,cx-tw/2))+6,h-Bm+14);
+  }
+  if(insp){
+    var kk=data[li],prev=li>0?data[li-1].c:(startI>0?all[startI-1].c:kk.o),chg=kk.c-prev,cp=prev?chg/prev*100:0,lcol=kk.c>=kk.o?C.up:C.dn;
+    insp.innerHTML='<span style="color:var(--muted)">'+(cross?hm(kk.t)+' WIB ':'')+'</span><span style="color:'+lcol+'">O '+f2(kk.o)+'  H '+f2(kk.h)+'  L '+f2(kk.l)+'  C '+f2(kk.c)+'  '+(chg>=0?'+':'')+f2(chg)+' ('+(cp>=0?'+':'')+cp.toFixed(2)+'%)</span>';
+  }
+};
+function chartBind(){
+  var c=$('#chart');if(!c||c._p2||!c.parentNode||!c.cloneNode)return;
+  var n=c.cloneNode(true);c.parentNode.replaceChild(n,c);n._p2=1;
+  var ptrs={},g={d0:0,n0:90,off0:0,moved:false};
+  function cnt(){return Object.keys(ptrs).length;}
+  function dist(){var a=Object.keys(ptrs).map(function(k){return ptrs[k];});return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)||1;}
+  n.addEventListener('pointerdown',function(e){try{n.setPointerCapture(e.pointerId);}catch(x){}ptrs[e.pointerId]={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY};g.moved=false;g.off0=S.view.off;if(cnt()===2){g.d0=dist();g.n0=S.view.n;}});
+  n.addEventListener('pointermove',function(e){
+    var p=ptrs[e.pointerId];if(!p)return;p.x=e.clientX;p.y=e.clientY;
+    if(cnt()===2&&g.d0){S.view.n=Math.round(g.n0*g.d0/dist());g.moved=true;S.chX=null;drawChart();}
+    else if(cnt()===1){var dx=p.x-p.sx;if(Math.abs(dx)>6)g.moved=true;if(g.moved){S.view.off=Math.round(g.off0+dx/(S.cm?S.cm.cw:5));S.chX=null;drawChart();}}
+  });
+  function up(e){
+    var p=ptrs[e.pointerId];delete ptrs[e.pointerId];
+    if(p&&!g.moved&&cnt()===0){
+      var r=n.getBoundingClientRect(),x=p.sx-r.left,y=p.sy-r.top;
+      if(S.chX!=null&&Math.abs(S.chX-x)<14&&Math.abs(S.chY-y)<14){S.chX=null;S.chY=null;}else{S.chX=x;S.chY=y;}
+      drawChart();
+    }
+    if(cnt()<2)g.d0=0;
+  }
+  n.addEventListener('pointerup',up);n.addEventListener('pointercancel',up);
+  n.addEventListener('wheel',function(e){e.preventDefault();S.view.n+=e.deltaY>0?8:-8;drawChart();},{passive:false});
+}
+var _rt=renderToggles;
+renderToggles=function(){
+  _rt.apply(this,arguments);
+  var el=$('#tgl');
+  if(el&&S.cv==='own'&&el.insertAdjacentHTML)el.insertAdjacentHTML('beforeend','<button data-act="zout" aria-label="Perkecil">&minus;</button><button data-act="zin" aria-label="Perbesar">+</button><button data-act="zreset">Reset</button>');
+  chartBind();
+};
+
+/* ---- tambalan tampilan ---- */
+renderAll=wrapAfter('renderAll',function(){renderProf();renderAlerts();renderSrcCard(true);if(!BT.running)renderBT();});
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-act]');if(!b)return;
+  var a=b.getAttribute('data-act'),k=b.getAttribute('data-k');
+  if(a==='prof')setProfile(k);
+  else if(a==='btRun')runBacktest();
+  else if(a==='alAdd')alAdd();
+  else if(a==='alDel'){P2.alerts=P2.alerts.filter(function(x){return x.id!==k;});p2Save();renderAlerts(true);}
+  else if(a==='zin'){S.view.n=Math.max(25,S.view.n-12);drawChart();}
+  else if(a==='zout'){S.view.n=Math.min(220,S.view.n+12);drawChart();}
+  else if(a==='zreset'){S.view.n=90;S.view.off=0;S.chX=null;drawChart();}
+  else if(a==='tdMode'){TD.mode=k;tdSave();TD.failAt=0;refresh();renderSrcCard(false,true);}
+  else if(a==='autoOff'){P2.autoOn=!P2.autoOn;p2Save();fixSrc();try{S.smc=S.feedOk?computeSMC():null;}catch(x){}renderAll();}
+  else if(a==='tdSave'){var inp=$('#tdKey'),v=inp?String(inp.value).trim():'';if(v){TD.key=v;TD.mode=TD.mode==='paxg'?'auto':TD.mode;TD.n=TD.n;tdSave();}if(TD.key)tdTest();else{var m=$('#tdMsg');if(m)m.textContent='Tempel API key dulu.';}}
+  else if(a==='tdDel'){TD.key='';TD.m15=null;TD.h1=null;TD.err='';tdSave();refresh();renderSrcCard(false,true);}
+});
+
+/* ---- mulai Fase 2A ---- */
+p2Load();
+S.minScore=(P2.profile==='konservatif'||P2.profile==='seimbang')?7:(PROFILES[P2.profile]||PROFILES.seimbang).minScore;
 
 (async function init(){
   await load();
